@@ -60,8 +60,6 @@ fun LoginScreen(navController: NavController) {
 
     val loginViewModel: LoginViewModel = hiltViewModel()
 
-    val state = loginViewModel.response.collectAsState()
-
     val scope = rememberCoroutineScope()
 
     val showProgressBar = remember {
@@ -208,26 +206,28 @@ fun LoginScreen(navController: NavController) {
                 }
 
                 val loginScope = scope.launch(Dispatchers.Main) {
-                    loginViewModel.loginUser(emailText, passwordText)
+                    loginViewModel.loginUser(emailText, passwordText).collect {
+                        when (it) {
+                            is ResponseType.Success -> {
+                                showProgressBar.value = false
+                                navController.navigate("EnterDetailsScreenOne")
+                                Log.d("UpdateCurrentState", "success")
+                            }
 
-                    when (state.value) {
-                        is ResponseType.Success -> {
-                            showProgressBar.value = false
-                            navController.navigate("EnterDetailsScreenOne")
-                            Log.d("UpdateCurrentState", "success")
+                            is ResponseType.Error -> {
+                                showProgressBar.value = false
+                                snackBarMsg.value = it.errorMsg.toString()
+                                openMySnackbar.value = true
+                                Log.d("UpdateCurrentState", "success")
+                            }
+
+                            is ResponseType.Loading -> {
+                                showProgressBar.value = true
+                            }
                         }
 
-                        is ResponseType.Error -> {
-                            showProgressBar.value = false
-                            snackBarMsg.value = state.value.errorMsg.toString()
-                            openMySnackbar.value = true
-                            Log.d("UpdateCurrentState", "success")
-                        }
-
-                        is ResponseType.Loading -> {
-                            showProgressBar.value = true
-                        }
                     }
+
                 }
             }
         }

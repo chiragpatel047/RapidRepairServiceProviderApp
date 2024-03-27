@@ -54,7 +54,7 @@ fun WelcomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.padding(20.dp))
 
         FullWidthButton(label = "Let's Get Start", color = MaterialTheme.colorScheme.primary) {
-            navController.navigate("OnBoardingScreen")
+            navController.navigate("SignUpScreen")
         }
         Spacer(modifier = Modifier.padding(40.dp))
     }

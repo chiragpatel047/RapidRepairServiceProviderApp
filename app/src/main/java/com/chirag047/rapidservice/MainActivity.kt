@@ -19,7 +19,9 @@ import com.chirag047.rapidservice.Screens.LoginScreen
 import com.chirag047.rapidservice.Screens.SignUpScreen
 import com.chirag047.rapidservice.Screens.WelcomeScreen
 import com.chirag047.rapidservice.ui.theme.RapidServiceTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

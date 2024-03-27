@@ -14,16 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(val authRepository: AuthRepository) : ViewModel() {
 
-    private val _response = MutableStateFlow<ResponseType<FirebaseUser>>(ResponseType.Loading())
-    val response : StateFlow<ResponseType<FirebaseUser>>
-        get() = _response
+    fun loginUser(email: String, password: String) = authRepository.loginUser(email, password)
 
-    fun loginUser(email: String, password: String) {
-        viewModelScope.launch {
-            authRepository.loginUser(email, password).collect{
-                _response.emit(it)
-            }
-        }
-    }
 
 }

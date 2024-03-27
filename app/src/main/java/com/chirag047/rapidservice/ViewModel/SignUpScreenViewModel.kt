@@ -16,15 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpScreenViewModel @Inject constructor(val authRepository: AuthRepository) : ViewModel() {
 
-    private val _response = MutableStateFlow<ResponseType<FirebaseUser>>(ResponseType.Loading())
-    val response : StateFlow<ResponseType<FirebaseUser>>
-        get() = _response
-
-    fun createUser(username: String, email: String, password: String) {
-        viewModelScope.launch {
-            authRepository.createUser(username, email, password).collect{
-                _response.emit(it)
-            }
-        }
-    }
+    fun createUser(username: String, email: String, password: String) =
+        authRepository.createUser(username, email, password)
 }

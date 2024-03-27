@@ -59,8 +59,6 @@ fun SignUpScreen(navController: NavController) {
     val signUpViewModel: SignUpScreenViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
 
-    val state = signUpViewModel.response.collectAsState()
-
     val showProgressBar = remember {
         mutableStateOf(false)
     }
@@ -242,24 +240,26 @@ fun SignUpScreen(navController: NavController) {
                 }
 
                 scope.launch(Dispatchers.Main) {
-                    signUpViewModel.createUser(nameText, emailText, passwordText)
+                    signUpViewModel.createUser(nameText, emailText, passwordText).collect {
 
-                    when (state.value) {
-                        is ResponseType.Success -> {
-                            showProgressBar.value = false
-                            navController.navigate("EnterDetailsScreenOne")
-                        }
+                        when (it) {
+                            is ResponseType.Success -> {
+                                showProgressBar.value = false
+                                navController.navigate("EnterDetailsScreenOne")
+                            }
 
-                        is ResponseType.Error -> {
-                            showProgressBar.value = false
-                            snackBarMsg.value = state.value.errorMsg.toString()
-                            openMySnackbar.value = true
-                        }
+                            is ResponseType.Error -> {
+                                showProgressBar.value = false
+                                snackBarMsg.value = it.errorMsg.toString()
+                                openMySnackbar.value = true
+                            }
 
-                        is ResponseType.Loading -> {
-                            showProgressBar.value = true
+                            is ResponseType.Loading -> {
+                                showProgressBar.value = true
+                            }
                         }
                     }
+
                 }
             }
             Spacer(modifier = Modifier.padding(40.dp))

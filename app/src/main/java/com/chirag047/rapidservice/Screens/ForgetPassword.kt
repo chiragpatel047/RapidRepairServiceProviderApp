@@ -51,6 +51,7 @@ import com.chirag047.rapidservice.Common.textBetweenTwoLines
 import com.chirag047.rapidservice.R
 import com.chirag047.rapidservice.ViewModel.ForgetPasswordViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,8 +60,6 @@ fun ForgetPassword(navController: NavController) {
     val forgetPasswordViewModel: ForgetPasswordViewModel = hiltViewModel()
 
     val scope = rememberCoroutineScope()
-
-    val state = forgetPasswordViewModel.response.collectAsState()
 
     val showProgressBar = remember {
         mutableStateOf(false)
@@ -156,25 +155,27 @@ fun ForgetPassword(navController: NavController) {
                 }
 
                 scope.launch(Dispatchers.Main) {
-                    forgetPasswordViewModel.sendEmailPasswordResetLink(emailText)
+                    forgetPasswordViewModel.sendEmailPasswordResetLink(emailText).collect {
+                        when (it) {
+                            is ResponseType.Success -> {
+                                showProgressBar.value = false
+                                snackBarMsg.value = it.data!!
+                                openMySnackbar.value = true
+                            }
 
-                    when (state.value) {
-                        is ResponseType.Success -> {
-                            showProgressBar.value = false
-                            snackBarMsg.value = state.value.data!!
-                            openMySnackbar.value = true
-                        }
+                            is ResponseType.Error -> {
+                                showProgressBar.value = false
+                                snackBarMsg.value = it.errorMsg.toString()
+                                openMySnackbar.value = true
+                            }
 
-                        is ResponseType.Error -> {
-                            showProgressBar.value = false
-                            snackBarMsg.value = state.value.errorMsg.toString()
-                            openMySnackbar.value = true
-                        }
-
-                        is ResponseType.Loading -> {
-                            showProgressBar.value = true
+                            is ResponseType.Loading -> {
+                                showProgressBar.value = true
+                            }
                         }
                     }
+
+
                 }
 
             }
