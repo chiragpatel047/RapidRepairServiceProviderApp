@@ -14,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.chirag047.rapidservice.Screens.EnterDetailsScreenOne
+import com.chirag047.rapidservice.Screens.ForgetPassword
+import com.chirag047.rapidservice.Screens.LoginScreen
 import com.chirag047.rapidservice.Screens.SignUpScreen
 import com.chirag047.rapidservice.Screens.WelcomeScreen
 import com.chirag047.rapidservice.ui.theme.RapidServiceTheme
@@ -47,8 +49,15 @@ fun App() {
         composable(route = "SignUpScreen") {
             SignUpScreen(navController)
         }
+        composable(route = "LoginScreen") {
+            LoginScreen(navController)
+        }
+        composable(route = "ForgetPassword") {
+            ForgetPassword(navController)
+        }
         composable(route = "EnterDetailsScreenOne") {
             EnterDetailsScreenOne(navController)
         }
+
     }
 }
