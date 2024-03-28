@@ -256,7 +256,7 @@ fun EnterDetailsScreenOne(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.padding(10.dp))
                 FullWidthButton(label = "Submit", color = MaterialTheme.colorScheme.primary) {
-
+                    navController.navigate("MainScreen")
                 }
             }
 

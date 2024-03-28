@@ -59,16 +59,15 @@ fun textWithSeeAllText(title: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp, 10.dp, 20.dp, 10.dp),
+            .padding(15.dp, 15.dp, 15.dp, 0.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-
         Text(
             text = title,
             textAlign = TextAlign.Start,
-            fontSize = 18.sp,
+            fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             fontFamily = FontFamily(Font(R.font.poppins_medium))
