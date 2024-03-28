@@ -94,7 +94,6 @@ fun ForgetPassword(navController: NavController) {
                     .padding(15.dp)
             )
 
-
             poppinsCenterText(
                 contentText = "Please, enter your email address. you will receive a link to reset your password via email.",
                 size = 14.sp,
@@ -174,12 +173,8 @@ fun ForgetPassword(navController: NavController) {
                             }
                         }
                     }
-
-
                 }
-
             }
-
             Spacer(modifier = Modifier.padding(40.dp))
         }
 

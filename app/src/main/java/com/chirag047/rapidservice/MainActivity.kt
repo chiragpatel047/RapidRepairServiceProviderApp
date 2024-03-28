@@ -19,6 +19,8 @@ import com.chirag047.rapidservice.Screens.LoginScreen
 import com.chirag047.rapidservice.Screens.SignUpScreen
 import com.chirag047.rapidservice.Screens.WelcomeScreen
 import com.chirag047.rapidservice.ui.theme.RapidServiceTheme
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,7 +34,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 )
                 {
-                    App()
+                    val auth = Firebase.auth
+                    if(auth.currentUser!=null){
+                        App("EnterDetailsScreenOne")
+                    }else{
+                        App("WelcomeScreen")
+                    }
                 }
             }
         }
@@ -41,10 +48,10 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun App() {
+fun App(startScreen : String) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "WelcomeScreen") {
+    NavHost(navController = navController, startDestination = startScreen) {
         composable(route = "WelcomeScreen") {
             WelcomeScreen(navController)
         }
