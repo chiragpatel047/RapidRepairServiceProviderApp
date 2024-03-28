@@ -39,7 +39,7 @@ fun MainScreen(navController: NavController) {
     val list = listOf(
         NavigationItem.HomeNav,
         NavigationItem.TrackNav,
-        NavigationItem.NotificationNav,
+        NavigationItem.MechanicNav,
         NavigationItem.ProfileNav
     )
 
@@ -127,8 +127,8 @@ fun navApp(bottomNavController: NavHostController, navController: NavController)
         composable(route = "TrackScreen") {
             TrackScreen(navController)
         }
-        composable(route = "NotificationScreen") {
-            NotificationScreen(navController)
+        composable(route = "MechanicScreen") {
+            MechanicScreen(navController)
         }
         composable(route = "ProfileScreen") {
             ProfileScreen(navController)

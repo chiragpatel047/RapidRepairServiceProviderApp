@@ -95,7 +95,7 @@ fun TrackScreen(navController: NavController) {
                     "Tue 30 Nov 2023 | 6.50 PM"
                 )
                 TrackHistorySingle(
-                    "Ashish Kharawar","Mahindra Thar | Diesel",
+                    "Ashish Kharawar", "Mahindra Thar | Diesel",
                     "Sun 6 Aug 2023 | 07.30 PM"
                 )
             }

@@ -6,8 +6,8 @@ sealed class NavigationItem(val route: String, val label: String, val icon: Int)
     object HomeNav : NavigationItem("HomeScreen", "Home", R.drawable.house)
     object TrackNav : NavigationItem("TrackScreen", "Track", R.drawable.track_nav_icon)
 
-    object NotificationNav :
-        NavigationItem("NotificationScreen", "Notification", R.drawable.notification)
+    object MechanicNav :
+        NavigationItem("MechanicScreen", "Mechanics", R.drawable.plumber)
 
     object ProfileNav : NavigationItem("ProfileScreen", "Profile", R.drawable.account)
 
