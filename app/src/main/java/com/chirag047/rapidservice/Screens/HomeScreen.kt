@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.SingleDoneService
+import com.chirag047.rapidservice.Common.SingleMechanic
 import com.chirag047.rapidservice.Common.SingleSerivceRequest
 import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Common.poppinsBoldText
@@ -153,12 +154,15 @@ fun HomeScreen(navController: NavController) {
             SingleSerivceRequest(R.drawable.motorcycle_icon,"Mukesh patel","Yamaha R15 | Petrol")
             SingleSerivceRequest(R.drawable.car_icon,"Tushar gohil","Maruti Swift | Diesel")
 
-            textWithSeeAllText(title = "Done services")
+            textWithSeeAllText(title = "Your Mechanic list")
 
+            SingleMechanic("Apurva Gandhi","Available")
+            SingleMechanic("Chintan Gajjar","Currently on service")
+            SingleMechanic("Papesh Padhare","Not available")
 
-            SingleDoneService(R.drawable.car_icon,"Ashish Kharawar","Mahindra Thar | Diesel")
+            //SingleDoneService(R.drawable.car_icon,"Ashish Kharawar","Mahindra Thar | Diesel")
             //SingleDoneService(R.drawable.motorcycle_icon,"Ankit Kharawar","Hero Splender | Petrol")
-            SingleDoneService(R.drawable.rickshaw_icon,"Mukesh patel","Auto Rickshaw | CNG")
+            //SingleDoneService(R.drawable.rickshaw_icon,"Mukesh patel","Auto Rickshaw | CNG")
 
         }
 
