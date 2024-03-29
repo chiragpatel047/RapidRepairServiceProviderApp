@@ -58,7 +58,7 @@ fun MechanicScreen(navController: NavController){
                 )
             },
             onClick = {
-                navController.navigate("")
+                navController.navigate("AddNewMechanicScreen")
             },
             icon = { Icon(Icons.Filled.Add, "") },
             modifier = Modifier

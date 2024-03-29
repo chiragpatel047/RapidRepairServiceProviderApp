@@ -13,11 +13,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.chirag047.rapidservice.Screens.AddNewMechanicScreen
+import com.chirag047.rapidservice.Screens.ChangePasswordScreen
+import com.chirag047.rapidservice.Screens.EditCorporateScreen
+import com.chirag047.rapidservice.Screens.EditProfile
 import com.chirag047.rapidservice.Screens.EnterDetailsScreenOne
 import com.chirag047.rapidservice.Screens.ForgetPassword
 import com.chirag047.rapidservice.Screens.LoginScreen
 import com.chirag047.rapidservice.Screens.MainScreen
 import com.chirag047.rapidservice.Screens.MechanicListScreen
+import com.chirag047.rapidservice.Screens.NotificationScreen
 import com.chirag047.rapidservice.Screens.ServiceHistoryScreen
 import com.chirag047.rapidservice.Screens.ServiceRequestListScreen
 import com.chirag047.rapidservice.Screens.SignUpScreen
@@ -82,6 +87,21 @@ fun App(startScreen : String) {
         }
         composable(route = "ServiceHistoryScreen") {
             ServiceHistoryScreen(navController)
+        }
+        composable(route = "AddNewMechanicScreen") {
+            AddNewMechanicScreen(navController)
+        }
+        composable(route = "EditProfile") {
+            EditProfile(navController)
+        }
+        composable(route = "NotificationScreen") {
+            NotificationScreen(navController)
+        }
+        composable(route = "ChangePasswordScreen") {
+            ChangePasswordScreen(navController)
+        }
+        composable(route = "EditCorporateScreen") {
+            EditCorporateScreen(navController)
         }
     }
 }

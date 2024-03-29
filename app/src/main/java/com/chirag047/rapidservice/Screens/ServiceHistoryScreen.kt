@@ -15,6 +15,7 @@ import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 
 @Composable
 fun ServiceHistoryScreen(navController: NavController) {
+
     val scroll = rememberScrollState()
 
     Column(Modifier.fillMaxWidth()) {

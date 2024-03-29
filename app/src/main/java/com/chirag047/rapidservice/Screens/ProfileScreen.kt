@@ -121,7 +121,7 @@ fun ProfileScreen(navController: NavController) {
                     title = "My corporate",
                     desc = "Edit your corporate information"
                 ) {
-                    navController.navigate("EditProfile")
+                    navController.navigate("EditCorporateScreen")
                 }
 
                 singleSetting(
