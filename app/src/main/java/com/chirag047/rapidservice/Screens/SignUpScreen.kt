@@ -262,6 +262,7 @@ fun SignUpScreen(navController: NavController) {
 
                 }
             }
+
             Spacer(modifier = Modifier.padding(40.dp))
         }
         customProgressBar(show = showProgressBar.value, title = "Wait a moment...")

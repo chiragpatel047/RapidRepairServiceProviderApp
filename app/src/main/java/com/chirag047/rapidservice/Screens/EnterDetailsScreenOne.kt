@@ -2,6 +2,7 @@ package com.chirag047.rapidservice.Screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.FullWidthButton
+import com.chirag047.rapidservice.Common.SnackbarWithoutScaffold
+import com.chirag047.rapidservice.Common.customProgressBar
 import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Common.poppinsBoldText
 import com.chirag047.rapidservice.R
@@ -47,6 +50,14 @@ import com.chirag047.rapidservice.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnterDetailsScreenOne(navController: NavController) {
+
+    val showProgressBar = remember {
+        mutableStateOf(false)
+    }
+
+    var openMySnackbar = remember { mutableStateOf(false) }
+    var snackBarMsg = remember { mutableStateOf("") }
+
     Box(Modifier.fillMaxSize()) {
 
         val scroll = rememberScrollState()
@@ -146,38 +157,6 @@ fun EnterDetailsScreenOne(navController: NavController) {
 
                 )
 
-                var centerLatLong by remember { mutableStateOf("Choose location on map") }
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 10.dp)
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(MaterialTheme.colorScheme.secondaryContainer),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = centerLatLong,
-                        fontSize = 12.sp,
-                        fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(20.dp, 20.dp)
-                    )
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.target),
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .padding(5.dp)
-                    )
-                    Spacer(modifier = Modifier.padding(4.dp))
-
-                }
-
-
                 var centerPhoneNo by remember { mutableStateOf("") }
 
                 poppinsBoldText(
@@ -255,11 +234,25 @@ fun EnterDetailsScreenOne(navController: NavController) {
                         .border(1.dp, Color.LightGray, RoundedCornerShape(50.dp))
                 )
                 Spacer(modifier = Modifier.padding(10.dp))
-                FullWidthButton(label = "Submit", color = MaterialTheme.colorScheme.primary) {
-                    navController.navigate("MainScreen")
+                FullWidthButton(label = "Next", color = MaterialTheme.colorScheme.primary) {
+
+                    if (centerName.isEmpty() || centerAddress.isEmpty() || centerPhoneNo.isEmpty() || centerTime.isEmpty()) {
+                        snackBarMsg.value = "Please fill all details"
+                        openMySnackbar.value = true
+                        return@FullWidthButton
+                    }
+
+                    navController.navigate("ChooseLocationOnMapScreen")
                 }
             }
-
         }
+
+        customProgressBar(show = showProgressBar.value, title = "Wait a moment...")
+
+        SnackbarWithoutScaffold(
+            snackBarMsg.value, openMySnackbar.value, { openMySnackbar.value = it }, Modifier.align(
+                Alignment.BottomCenter
+            )
+        )
     }
 }
