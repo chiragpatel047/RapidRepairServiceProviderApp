@@ -1,6 +1,7 @@
 package com.chirag047.rapidservice.Screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,15 +14,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.ActionBarWIthBack
 import com.chirag047.rapidservice.Common.poppinsBoldText
 import com.chirag047.rapidservice.Common.poppinsText
+import com.chirag047.rapidservice.R
 
 @Composable
 fun ClientIssueDetailScreen(navController: NavController) {
@@ -29,10 +38,10 @@ fun ClientIssueDetailScreen(navController: NavController) {
         val scroll = rememberScrollState()
         Column(Modifier.fillMaxWidth()) {
             ActionBarWIthBack(title = "Client Issue details")
-
             Column(
                 Modifier
                     .fillMaxWidth()
+                    .weight(1f)
                     .verticalScroll(scroll)
             ) {
                 poppinsBoldText(
@@ -81,8 +90,123 @@ fun ClientIssueDetailScreen(navController: NavController) {
                         }
                     }
                 }
+
+                poppinsBoldText(
+                    contentText = "Client Service Request",
+                    size = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp, 5.dp, 15.dp, 0.dp)
+                )
+
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp)
+                        .clip(RoundedCornerShape(25.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+
+                    Row(
+                        modifier = Modifier.padding(15.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column() {
+                            detailTitle(title = "Client Issue type")
+                            detailTitle(title = "Client Location")
+                            detailTitle(title = "Client Address")
+                        }
+                        Column() {
+                            colanText()
+                            colanText()
+                            colanText()
+                        }
+                        Column {
+                            detailContent("Flat Tyre")
+                            detailContent("Locate Client")
+                            detailContent("4069, Streetview Lane, Las vagas")
+                        }
+                    }
+                }
+
+                poppinsBoldText(
+                    contentText = "Client added Text",
+                    size = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp, 5.dp, 15.dp, 0.dp)
+                )
+
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp)
+                        .clip(RoundedCornerShape(25.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+
+                    Row(
+                        modifier = Modifier.padding(15.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        detailContent("Experiencing a flat tire on my vehicle, requiring immediate attention and repair to ensure safe and uninterrupted travel")
+                    }
+                }
+
+            }
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp,25.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .border(
+                                1.dp, MaterialTheme.colorScheme.primary,
+                                RoundedCornerShape(25.dp)
+                            )
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "Decline",
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                            modifier = Modifier
+                                .padding(15.dp, 10.dp)
+                                .weight(1f)
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(2.dp))
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(25.dp))
+                            .background(MaterialTheme.colorScheme.primary)
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "Accept",
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                            modifier = Modifier
+                                .padding(15.dp, 10.dp)
+                                .weight(1f)
+                        )
+                    }
+                }
             }
         }
+
+
     }
 }
 
@@ -108,9 +232,12 @@ fun colanText() {
 
 @Composable
 fun detailContent(content: String) {
-    poppinsText(
-        contentText = content,
-        size = 14.sp,
+    Text(
+        text = content,
+        fontFamily = FontFamily(Font(R.font.poppins_medium)),
+        fontSize = 14.sp,
+        textDecoration = if (content.equals("Locate Client")) TextDecoration.Underline else TextDecoration.None,
+        color = if (content.equals("Locate Client")) MaterialTheme.colorScheme.primary else Color.Unspecified,
         modifier = Modifier
             .padding(15.dp, 5.dp, 15.dp, 0.dp)
     )

@@ -25,9 +25,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.chirag047.rapidservice.Common.GrayFilledSimpleButton
 import com.chirag047.rapidservice.Common.SingleDoneService
 import com.chirag047.rapidservice.Common.SingleMechanic
 import com.chirag047.rapidservice.Common.SingleSerivceRequest
@@ -43,21 +46,49 @@ fun HomeScreen(navController: NavController) {
 
         val scroll = rememberScrollState()
 
-        Column(Modifier.fillMaxWidth()) {
-            poppinsBoldCenterText(
-                contentText = "Home",
-                size = 16.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp)
-            )
-        }
-
         Column(
             Modifier
                 .fillMaxWidth()
                 .verticalScroll(scroll)
         ) {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp, 20.dp, 20.dp, 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                Column {
+                    Text(
+                        text = "Welcome ,",
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                        fontSize = 12.sp
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.manager),
+                            contentDescription = "",
+                            modifier = Modifier.size(15.dp),
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.padding(2.dp))
+                        Text(
+                            text = "Jone snow",
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                            textAlign = TextAlign.Center,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+                GrayFilledSimpleButton(imageIcon = R.drawable.notification) {
+                    navController.navigate("NotificationScreen")
+                }
+            }
 
             Box(
                 Modifier
@@ -149,15 +180,25 @@ fun HomeScreen(navController: NavController) {
                 }
             }
 
-            textWithSeeAllText(title = "Service Request list"){
+            textWithSeeAllText(title = "Service Request list") {
                 navController.navigate("ServiceRequestListScreen")
             }
 
             //SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery")
-            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol",navController)
-            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel",navController)
+            SingleSerivceRequest(
+                R.drawable.motorcycle_icon,
+                "Mukesh patel",
+                "Yamaha R15 | Petrol",
+                navController
+            )
+            SingleSerivceRequest(
+                R.drawable.car_icon,
+                "Tushar gohil",
+                "Maruti Swift | Diesel",
+                navController
+            )
 
-            textWithSeeAllText(title = "Your Mechanic list"){
+            textWithSeeAllText(title = "Your Mechanic list") {
                 navController.navigate("MechanicListScreen")
             }
 
