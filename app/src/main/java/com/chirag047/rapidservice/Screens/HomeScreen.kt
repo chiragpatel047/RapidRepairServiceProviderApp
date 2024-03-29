@@ -154,8 +154,8 @@ fun HomeScreen(navController: NavController) {
             }
 
             //SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery")
-            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol")
-            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel")
+            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol",navController)
+            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel",navController)
 
             textWithSeeAllText(title = "Your Mechanic list"){
                 navController.navigate("MechanicListScreen")

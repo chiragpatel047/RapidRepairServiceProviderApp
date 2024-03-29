@@ -42,7 +42,7 @@ import com.chirag047.rapidservice.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditCorporateScreen(navController: NavController){
+fun EditCorporateScreen(navController: NavController) {
     Box(Modifier.fillMaxSize()) {
         val scroll = rememberScrollState()
 

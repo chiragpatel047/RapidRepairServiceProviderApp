@@ -36,10 +36,11 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.chirag047.rapidservice.R
 
 @Composable
-fun SingleSerivceRequest(icon : Int, name : String,carDetails : String) {
+fun SingleSerivceRequest(icon : Int, name : String,carDetails : String,navController: NavController) {
 
     Column(
         Modifier
@@ -142,7 +143,9 @@ fun SingleSerivceRequest(icon : Int, name : String,carDetails : String) {
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(MaterialTheme.colorScheme.primary).clickable {
+                        navController.navigate("ClientIssueDetailScreen")
+                    }
 
             ) {
                 Text(

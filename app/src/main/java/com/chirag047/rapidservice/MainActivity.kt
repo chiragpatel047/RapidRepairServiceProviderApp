@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.chirag047.rapidservice.Screens.AddNewMechanicScreen
 import com.chirag047.rapidservice.Screens.ChangePasswordScreen
+import com.chirag047.rapidservice.Screens.ClientIssueDetailScreen
 import com.chirag047.rapidservice.Screens.EditCorporateScreen
 import com.chirag047.rapidservice.Screens.EditProfile
 import com.chirag047.rapidservice.Screens.EnterDetailsScreenOne
@@ -102,6 +103,9 @@ fun App(startScreen : String) {
         }
         composable(route = "EditCorporateScreen") {
             EditCorporateScreen(navController)
+        }
+        composable(route = "ClientIssueDetailScreen") {
+            ClientIssueDetailScreen(navController)
         }
     }
 }

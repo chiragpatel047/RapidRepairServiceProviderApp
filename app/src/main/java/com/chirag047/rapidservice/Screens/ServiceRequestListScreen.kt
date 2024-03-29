@@ -35,18 +35,18 @@ fun ServiceRequestListScreen(navController: NavController) {
                 .fillMaxWidth()
                 .verticalScroll(scroll)) {
 
-            SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery")
-            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol")
-            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel")
-            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol")
-            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel")
-            SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery")
-            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel")
-            SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery")
-            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol")
-            SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery")
-            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol")
-            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel")
+            SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery",navController)
+            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol",navController)
+            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel",navController)
+            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol",navController)
+            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel",navController)
+            SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery",navController)
+            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel",navController)
+            SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery",navController)
+            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol",navController)
+            SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery",navController)
+            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol",navController)
+            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel",navController)
 
         }
 
