@@ -59,37 +59,45 @@ fun ProfileScreen(navController: NavController) {
                     .verticalScroll(scroll)
             ) {
 
-                Spacer(modifier = Modifier.padding(20.dp))
-
-                Image(
-                    painter = painterResource(id = R.drawable.profile_image_temp),
-                    contentDescription = "",
-                    Modifier
-                        .size(100.dp)
-                        .clip(RoundedCornerShape(50.dp))
-                        .align(Alignment.CenterHorizontally)
-                )
-                Text(
-                    text = "Jon snow",
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                )
-
-                Spacer(modifier = Modifier.padding(10.dp))
-
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .height(1.dp)
-                        .background(MaterialTheme.colorScheme.outline)
+                        .padding(20.dp, 15.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.profile_image_temp),
+                        contentDescription = "",
+                        Modifier
+                            .size(100.dp)
+                            .clip(RoundedCornerShape(50.dp))
+                    )
+
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    
+                    Column() {
+                        Text(
+                            text = "Jon snow",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp, 0.dp)
+                        )
+                        Text(
+                            text = "jonesnow0806@gmail.com",
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.poppins_medium)),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp, 0.dp)
+                        )
+                    }
 
                 }
+
                 Spacer(modifier = Modifier.padding(10.dp))
 
                 poppinsBoldText(

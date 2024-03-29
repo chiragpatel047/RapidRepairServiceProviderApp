@@ -34,6 +34,7 @@ import com.chirag047.rapidservice.Common.TrackHistorySingle
 import com.chirag047.rapidservice.Common.TrackSingle
 import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Common.poppinsBoldText
+import com.chirag047.rapidservice.Common.textWithSeeAllText
 
 @Composable
 fun TrackScreen(navController: NavController) {
@@ -56,13 +57,13 @@ fun TrackScreen(navController: NavController) {
             ) {
                 Spacer(modifier = Modifier.padding(4.dp))
                 poppinsBoldText(
-                    contentText = "Service Request list",
+                    contentText = "Currently live services",
                     size = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(15.dp, 5.dp, 15.dp, 0.dp)
                 )
-
+                
                 Spacer(modifier = Modifier.padding(2.dp))
 
                 TrackSingle("Ashish Kharvar", "Mahindra Thar | Diesel") {
@@ -71,13 +72,9 @@ fun TrackScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.padding(6.dp))
 
-                poppinsBoldText(
-                    contentText = "Service History",
-                    size = 16.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(15.dp, 5.dp, 15.dp, 0.dp)
-                )
+                textWithSeeAllText(title = "Service History") {
+                    navController.navigate("ServiceHistoryScreen")
+                }
 
                 Spacer(modifier = Modifier.padding(6.dp))
                 TrackHistorySingle(

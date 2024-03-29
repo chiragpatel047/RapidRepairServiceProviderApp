@@ -30,8 +30,6 @@ fun MechanicScreen(navController: NavController){
         val scroll = rememberScrollState()
 
         Column(Modifier.fillMaxWidth()) {
-
-
             Column(Modifier.fillMaxWidth()) {
                 poppinsBoldCenterText(
                     contentText = "Mechanics",

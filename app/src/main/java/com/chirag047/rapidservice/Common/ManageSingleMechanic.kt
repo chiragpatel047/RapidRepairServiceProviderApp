@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chirag047.rapidservice.R
@@ -56,7 +57,7 @@ fun ManageSingleMechanic(name: String, status: String) {
         ) {
             Column(
                 Modifier
-                    .padding(15.dp, 0.dp, 7.dp, 0.dp)
+                    .padding(15.dp, 5.dp, 7.dp, 0.dp)
                     .clip(RoundedCornerShape(10.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -119,14 +120,15 @@ fun ManageSingleMechanic(name: String, status: String) {
                 modifier = Modifier.border(
                     1.dp, MaterialTheme.colorScheme.primary,
                     RoundedCornerShape(25.dp)
-                )
+                ).weight(1f)
             ) {
                 Text(
                     text = "Send notification",
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                    modifier = Modifier.padding(15.dp, 5.dp)
+                    modifier = Modifier.padding(15.dp, 8.dp).weight(1f)
                 )
             }
             Spacer(modifier = Modifier.padding(2.dp))
@@ -134,14 +136,15 @@ fun ManageSingleMechanic(name: String, status: String) {
                 modifier = Modifier.border(
                     1.dp, MaterialTheme.colorScheme.primary,
                     RoundedCornerShape(25.dp)
-                )
+                ).weight(1f)
             ) {
                 Text(
                     text = "Call now",
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                    modifier = Modifier.padding(15.dp, 5.dp)
+                    modifier = Modifier.padding(15.dp, 8.dp).weight(1f)
                 )
             }
             Spacer(modifier = Modifier.padding(5.dp))

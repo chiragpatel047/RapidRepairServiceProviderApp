@@ -17,6 +17,9 @@ import com.chirag047.rapidservice.Screens.EnterDetailsScreenOne
 import com.chirag047.rapidservice.Screens.ForgetPassword
 import com.chirag047.rapidservice.Screens.LoginScreen
 import com.chirag047.rapidservice.Screens.MainScreen
+import com.chirag047.rapidservice.Screens.MechanicListScreen
+import com.chirag047.rapidservice.Screens.ServiceHistoryScreen
+import com.chirag047.rapidservice.Screens.ServiceRequestListScreen
 import com.chirag047.rapidservice.Screens.SignUpScreen
 import com.chirag047.rapidservice.Screens.WelcomeScreen
 import com.chirag047.rapidservice.ui.theme.RapidServiceTheme
@@ -70,6 +73,15 @@ fun App(startScreen : String) {
         }
         composable(route = "MainScreen") {
             MainScreen(navController)
+        }
+        composable(route = "ServiceRequestListScreen") {
+            ServiceRequestListScreen(navController)
+        }
+        composable(route = "MechanicListScreen") {
+            MechanicListScreen(navController)
+        }
+        composable(route = "ServiceHistoryScreen") {
+            ServiceHistoryScreen(navController)
         }
     }
 }

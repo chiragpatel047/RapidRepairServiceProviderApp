@@ -56,13 +56,15 @@ fun HomeScreen(navController: NavController) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .verticalScroll(scroll)) {
+                .verticalScroll(scroll)
+        ) {
 
             Box(
                 Modifier
                     .padding(15.dp)
                     .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)) {
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+            ) {
 
                 Column(Modifier.fillMaxWidth()) {
                     poppinsBoldCenterText(
@@ -124,7 +126,7 @@ fun HomeScreen(navController: NavController) {
                                     fontFamily = FontFamily(Font(R.font.poppins_medium))
                                 )
                             }
-                            
+
                             Spacer(modifier = Modifier.padding(8.dp))
 
                         }
@@ -143,22 +145,25 @@ fun HomeScreen(navController: NavController) {
                                 fontFamily = FontFamily(Font(R.font.poppins_medium)),
                             )
                         }
-
                     }
                 }
             }
 
-            textWithSeeAllText(title = "Service Request list")
+            textWithSeeAllText(title = "Service Request list"){
+                navController.navigate("ServiceRequestListScreen")
+            }
 
             //SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery")
-            SingleSerivceRequest(R.drawable.motorcycle_icon,"Mukesh patel","Yamaha R15 | Petrol")
-            SingleSerivceRequest(R.drawable.car_icon,"Tushar gohil","Maruti Swift | Diesel")
+            SingleSerivceRequest(R.drawable.motorcycle_icon, "Mukesh patel", "Yamaha R15 | Petrol")
+            SingleSerivceRequest(R.drawable.car_icon, "Tushar gohil", "Maruti Swift | Diesel")
 
-            textWithSeeAllText(title = "Your Mechanic list")
+            textWithSeeAllText(title = "Your Mechanic list"){
+                navController.navigate("MechanicListScreen")
+            }
 
-            SingleMechanic("Apurva Gandhi","Available")
-            SingleMechanic("Chintan Gajjar","Currently on service")
-            SingleMechanic("Papesh Padhare","Not available")
+            SingleMechanic("Apurva Gandhi", "Available")
+            SingleMechanic("Chintan Gajjar", "Currently on service")
+            SingleMechanic("Papesh Padhare", "Not available")
 
             //SingleDoneService(R.drawable.car_icon,"Ashish Kharawar","Mahindra Thar | Diesel")
             //SingleDoneService(R.drawable.motorcycle_icon,"Ankit Kharawar","Hero Splender | Petrol")
