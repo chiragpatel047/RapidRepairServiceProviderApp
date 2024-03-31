@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,12 +37,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.ActionBarWIthBack
 import com.chirag047.rapidservice.Common.FullWidthButton
+import com.chirag047.rapidservice.Common.ResponseType
 import com.chirag047.rapidservice.Common.SnackbarWithoutScaffold
 import com.chirag047.rapidservice.Common.customProgressBar
+import com.chirag047.rapidservice.Model.CenterModel
 import com.chirag047.rapidservice.R
+import com.chirag047.rapidservice.ViewModel.ChooseLocationOnMapViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -50,6 +55,7 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,10 +72,21 @@ fun ChooseLocationOnMapScreen(
         mutableStateOf(false)
     }
 
+    val latitude = remember {
+        mutableStateOf("")
+    }
+    val longitude = remember {
+        mutableStateOf("")
+    }
+
+
+    val chooseLocationOnMapViewModel: ChooseLocationOnMapViewModel = hiltViewModel()
+
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = Unit) {
         delay(500)
         loadMap.value = true
-        //showProgressBar.value = false
     }
 
     Box(Modifier.fillMaxSize()) {
@@ -103,8 +120,10 @@ fun ChooseLocationOnMapScreen(
                     .weight(1f)
                     .background(Color.Black)
             ) {
-                screen(load = loadMap.value, onClick = {
-                    currentCoords.value = it
+                screen(load = loadMap.value, onClick = { lat, long ->
+                    latitude.value = lat
+                    longitude.value = long
+                    currentCoords.value = "Latitude : " + lat + "\nLongitude : " + long
                 })
             }
 
@@ -177,7 +196,41 @@ fun ChooseLocationOnMapScreen(
                                 openMySnackbar.value = true
                                 return@FullWidthButton
                             }
-                            navController.navigate("MainScreen")
+
+                            val centerModel = CenterModel(
+                                System.currentTimeMillis().toString(),
+                                corporateName,
+                                corporateAddress,
+                                corporateTime,
+                                corporatePhoneNo,
+                                "0.0",
+                                corporateCity,
+                                latitude.value,
+                                longitude.value
+                            )
+
+                            scope.launch {
+                                chooseLocationOnMapViewModel.createNewCenter(centerModel).collect {
+                                    when (it) {
+                                        is ResponseType.Success -> {
+                                            showProgressBar.value = false
+                                            navController.navigate("MainScreen")
+                                        }
+
+                                        is ResponseType.Loading -> {
+                                            showProgressBar.value = true
+                                        }
+
+                                        is ResponseType.Error -> {
+                                            showProgressBar.value = false
+                                            snackBarMsg.value = it.errorMsg.toString()
+                                            openMySnackbar.value = true
+                                        }
+                                    }
+
+                                }
+                            }
+
                         }
                     }
                 }
@@ -198,7 +251,7 @@ fun ChooseLocationOnMapScreen(
 }
 
 @Composable
-fun screen(load: Boolean, onClick: (coords: String) -> Unit) {
+fun screen(load: Boolean, onClick: (lat: String, long: String) -> Unit) {
     AnimatedVisibility(visible = load) {
         val markerState =
             remember { mutableStateOf(MarkerState(position = LatLng(0.0, 0.0))) }
@@ -215,7 +268,7 @@ fun screen(load: Boolean, onClick: (coords: String) -> Unit) {
                 val latitude = clickCoordinates.latitude
                 val longitude = clickCoordinates.longitude
                 markerState.value = MarkerState(position = clickCoordinates)
-                onClick.invoke("Latitude : " + latitude.toString() + "\nLongitude : " + longitude.toString())
+                onClick.invoke(latitude.toString(), longitude.toString())
             }
         ) {
             if (!markerState.value.position.latitude.equals(0.0)) {

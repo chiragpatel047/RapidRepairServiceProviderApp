@@ -240,6 +240,7 @@ fun EnterDetailsScreenOne(navController: NavController) {
                 TextField(
                     value = centerPhoneNo,
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     onValueChange = { centerPhoneNo = it },
                     textStyle = TextStyle(
                         fontSize = 14.sp,
