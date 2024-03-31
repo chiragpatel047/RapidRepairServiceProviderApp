@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -18,13 +19,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -44,15 +48,34 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun ChooseLocationOnMapScreen(navController: NavController) {
-    Box(Modifier.fillMaxSize()) {
+fun ChooseLocationOnMapScreen(
+    navController: NavController,
+    corporateName: String,
+    corporateAddress: String,
+    corporateCity: String,
+    corporatePhoneNo: String,
+    corporateTime: String
+) {
 
+    val loadMap = remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        delay(500)
+        loadMap.value = true
+        //showProgressBar.value = false
+    }
+
+    Box(Modifier.fillMaxSize()) {
         val showProgressBar = remember {
             mutableStateOf(false)
         }
-
         val currentCoords = remember {
             mutableStateOf("Click on map where your corporate is locate")
         }
@@ -65,8 +88,6 @@ fun ChooseLocationOnMapScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-
-            val markerState = remember { mutableStateOf(MarkerState(position = LatLng(0.0, 0.0))) }
 
             Column(
                 Modifier
@@ -82,25 +103,9 @@ fun ChooseLocationOnMapScreen(navController: NavController) {
                     .weight(1f)
                     .background(Color.Black)
             ) {
-                val cameraPositionState = rememberCameraPositionState {
-                    position = CameraPosition.fromLatLngZoom(LatLng(24.6, 85.7), 3f)
-                }
-                GoogleMap(
-                    modifier = Modifier.fillMaxSize(),
-                    cameraPositionState = cameraPositionState,
-                    onMapClick = { clickCoordinates ->
-                        // Extract lat and lng from clickCoordinates
-                        val latitude = clickCoordinates.latitude
-                        val longitude = clickCoordinates.longitude
-                        markerState.value = MarkerState(position = clickCoordinates)
-                        currentCoords.value =
-                            "Latitude : " + latitude.toString() + "\nLongitude : " + longitude.toString()
-                    }
-                ) {
-                    if (!markerState.value.position.latitude.equals(0.0)) {
-                        Marker(state = markerState.value)
-                    }
-                }
+                screen(load = loadMap.value, onClick = {
+                    currentCoords.value = it
+                })
             }
 
             Column(
@@ -178,12 +183,44 @@ fun ChooseLocationOnMapScreen(navController: NavController) {
                 }
             }
         }
+
         customProgressBar(show = showProgressBar.value, title = "Wait a moment...")
 
         SnackbarWithoutScaffold(
-            snackBarMsg.value, openMySnackbar.value, { openMySnackbar.value = it }, Modifier.align(
+            snackBarMsg.value,
+            openMySnackbar.value,
+            { openMySnackbar.value = it },
+            Modifier.align(
                 Alignment.BottomCenter
             )
         )
+    }
+}
+
+@Composable
+fun screen(load: Boolean, onClick: (coords: String) -> Unit) {
+    AnimatedVisibility(visible = load) {
+        val markerState =
+            remember { mutableStateOf(MarkerState(position = LatLng(0.0, 0.0))) }
+
+        val cameraPositionState = rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(LatLng(24.6, 85.7), 3f)
+        }
+
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            onMapClick = { clickCoordinates ->
+                // Extract lat and lng from clickCoordinates
+                val latitude = clickCoordinates.latitude
+                val longitude = clickCoordinates.longitude
+                markerState.value = MarkerState(position = clickCoordinates)
+                onClick.invoke("Latitude : " + latitude.toString() + "\nLongitude : " + longitude.toString())
+            }
+        ) {
+            if (!markerState.value.position.latitude.equals(0.0)) {
+                Marker(state = markerState.value)
+            }
+        }
     }
 }

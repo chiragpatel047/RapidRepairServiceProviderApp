@@ -318,7 +318,7 @@ fun EnterDetailsScreenOne(navController: NavController) {
                         return@FullWidthButton
                     }
 
-                    navController.navigate("ChooseLocationOnMapScreen")
+                    navController.navigate("ChooseLocationOnMapScreen" + "/$centerName" + "/$centerAddress" + "/${selectedCity.value}" + "/$centerPhoneNo" + "/$centerTime")
                 }
             }
         }

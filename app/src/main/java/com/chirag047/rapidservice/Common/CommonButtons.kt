@@ -131,6 +131,7 @@ fun FilledCommonCustomButton(imageIcon: Int, onClick: () -> Unit) {
         )
     }
 }
+
 @Composable
 fun GrayFilledSimpleButton(imageIcon: Int, onClick: () -> Unit) {
     IconButton(

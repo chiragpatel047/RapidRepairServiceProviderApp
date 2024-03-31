@@ -46,9 +46,9 @@ class MainActivity : ComponentActivity() {
                 )
                 {
                     val auth = Firebase.auth
-                    if(auth.currentUser!=null){
+                    if (auth.currentUser != null) {
                         App("EnterDetailsScreenOne")
-                    }else{
+                    } else {
                         App("WelcomeScreen")
                     }
                 }
@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun App(startScreen : String) {
+fun App(startScreen: String) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = startScreen) {
@@ -78,8 +78,20 @@ fun App(startScreen : String) {
         composable(route = "EnterDetailsScreenOne") {
             EnterDetailsScreenOne(navController)
         }
-        composable(route = "ChooseLocationOnMapScreen") {
-            ChooseLocationOnMapScreen(navController)
+        composable(route = "ChooseLocationOnMapScreen" + "/{corporateName}/{corporateAddress}/{corporateCity}/{corporatePhoneNo}/{corporateTime}") {
+            val corporateName = it.arguments?.getString("corporateName")!!
+            val corporateAddress = it.arguments?.getString("corporateAddress")!!
+            val corporateCity = it.arguments?.getString("corporateCity")!!
+            val corporatePhoneNo = it.arguments?.getString("corporatePhoneNo")!!
+            val corporateTime = it.arguments?.getString("corporateTime")!!
+            ChooseLocationOnMapScreen(
+                navController,
+                corporateName,
+                corporateAddress,
+                corporateCity,
+                corporatePhoneNo,
+                corporateTime
+            )
         }
         composable(route = "MainScreen") {
             MainScreen(navController)
