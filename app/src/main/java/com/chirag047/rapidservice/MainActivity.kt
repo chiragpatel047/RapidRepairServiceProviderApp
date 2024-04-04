@@ -1,5 +1,7 @@
 package com.chirag047.rapidservice
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,10 +48,20 @@ class MainActivity : ComponentActivity() {
                 )
                 {
                     val auth = Firebase.auth
+                    val sharedPreferences =
+                        getSharedPreferences("isDataFilledPrefrence", Context.MODE_PRIVATE)
+
+                    val isFilled = sharedPreferences.getBoolean("isDataFilled", false)
+
                     if (auth.currentUser != null) {
-                        App("EnterDetailsScreenOne")
+                        if (isFilled) {
+                            App("MainScreen", sharedPreferences)
+
+                        } else {
+                            App("EnterDetailsScreenOne", sharedPreferences)
+                        }
                     } else {
-                        App("WelcomeScreen")
+                        App("WelcomeScreen", sharedPreferences)
                     }
                 }
             }
@@ -59,7 +71,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun App(startScreen: String) {
+fun App(startScreen: String, sharedPreferences: SharedPreferences) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = startScreen) {
@@ -94,7 +106,7 @@ fun App(startScreen: String) {
             )
         }
         composable(route = "MainScreen") {
-            MainScreen(navController)
+            MainScreen(navController,sharedPreferences)
         }
         composable(route = "ServiceRequestListScreen") {
             ServiceRequestListScreen(navController)

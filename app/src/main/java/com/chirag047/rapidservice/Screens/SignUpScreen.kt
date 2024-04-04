@@ -245,7 +245,16 @@ fun SignUpScreen(navController: NavController) {
                         when (it) {
                             is ResponseType.Success -> {
                                 showProgressBar.value = false
-                                navController.navigate("EnterDetailsScreenOne")
+
+                                navController.popBackStack()
+                                navController.popBackStack()
+                                navController.popBackStack()
+                                navController.popBackStack()
+                                navController.popBackStack()
+
+                                navController.navigate("EnterDetailsScreenOne"){
+                                    launchSingleTop = true
+                                }
                             }
 
                             is ResponseType.Error -> {

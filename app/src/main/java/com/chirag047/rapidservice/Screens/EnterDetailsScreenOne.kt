@@ -318,14 +318,12 @@ fun EnterDetailsScreenOne(navController: NavController) {
                         openMySnackbar.value = true
                         return@FullWidthButton
                     }
-
                     navController.navigate("ChooseLocationOnMapScreen" + "/$centerName" + "/$centerAddress" + "/${selectedCity.value}" + "/$centerPhoneNo" + "/$centerTime")
                 }
             }
         }
 
         customProgressBar(show = showProgressBar.value, title = "Wait a moment...")
-
         SnackbarWithoutScaffold(
             snackBarMsg.value, openMySnackbar.value, { openMySnackbar.value = it }, Modifier.align(
                 Alignment.BottomCenter

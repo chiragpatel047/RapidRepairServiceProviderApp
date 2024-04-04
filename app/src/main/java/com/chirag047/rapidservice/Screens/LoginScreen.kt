@@ -210,7 +210,19 @@ fun LoginScreen(navController: NavController) {
                         when (it) {
                             is ResponseType.Success -> {
                                 showProgressBar.value = false
-                                navController.navigate("EnterDetailsScreenOne")
+
+                                navController.popBackStack()
+                                navController.popBackStack()
+                                navController.popBackStack()
+
+                                if (it.data!!.userCenterId.equals("")) {
+
+                                    navController.navigate("EnterDetailsScreenOne")
+                                } else {
+                                    navController.navigate("MainScreen")
+                                }
+
+
                                 Log.d("UpdateCurrentState", "success")
                             }
 

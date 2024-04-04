@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+import android.content.SharedPreferences
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.chirag047.rapidservice.Common.ActionBarWIthBack
 import com.chirag047.rapidservice.Common.FullWidthButton
 import com.chirag047.rapidservice.Common.ResponseType
@@ -79,9 +81,7 @@ fun ChooseLocationOnMapScreen(
         mutableStateOf("")
     }
 
-
     val chooseLocationOnMapViewModel: ChooseLocationOnMapViewModel = hiltViewModel()
-
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = Unit) {
@@ -207,14 +207,24 @@ fun ChooseLocationOnMapScreen(
                                 corporateCity,
                                 latitude.value,
                                 longitude.value
+
                             )
 
-                            scope.launch {
+                            scope.launch(Dispatchers.Main) {
                                 chooseLocationOnMapViewModel.createNewCenter(centerModel).collect {
                                     when (it) {
                                         is ResponseType.Success -> {
                                             showProgressBar.value = false
+
+                                            navController.popBackStack()
+                                            navController.popBackStack()
+                                            navController.popBackStack()
+                                            navController.popBackStack()
+                                            navController.popBackStack()
+
                                             navController.navigate("MainScreen")
+
+
                                         }
 
                                         is ResponseType.Loading -> {

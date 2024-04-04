@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,7 +36,7 @@ import com.chirag047.rapidservice.Common.NavigationItem
 import com.chirag047.rapidservice.R
 
 @Composable
-fun MainScreen(navController: NavController) {
+fun MainScreen(navController: NavController, sharedPreferences: SharedPreferences) {
     val list = listOf(
         NavigationItem.HomeNav,
         NavigationItem.TrackNav,
@@ -44,8 +45,8 @@ fun MainScreen(navController: NavController) {
     )
 
     val bottomNavController = rememberNavController()
-
-
+    sharedPreferences.edit()
+        .putBoolean("isDataFilled", true).apply()
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
