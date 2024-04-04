@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class DataRepository @Inject constructor(val firestore: FirebaseFirestore,val auth : FirebaseAuth) {
+class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val auth: FirebaseAuth) {
 
     suspend fun createNewCenter(centerModel: CenterModel): Flow<ResponseType<String>> =
         callbackFlow {
@@ -20,8 +20,8 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore,val au
                     if (it.isSuccessful) {
                         firestore.collection("serviceUsers")
                             .document(auth.currentUser!!.uid)
-                            .update("userCenterId",centerModel.centerId).addOnCompleteListener {
-                                if(it.isSuccessful){
+                            .update("userCenterId", centerModel.centerId).addOnCompleteListener {
+                                if (it.isSuccessful) {
                                     trySend(ResponseType.Success("Your corporate registered successfully"))
                                 }
                             }
@@ -33,4 +33,21 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore,val au
                 close()
             }
         }
+
+
+    suspend fun getSingleCenterDetails(centerId: String): Flow<ResponseType<CenterModel?>> =
+        callbackFlow {
+            trySend(ResponseType.Loading())
+
+            firestore.collection("centers")
+                .document(centerId)
+                .addSnapshotListener { value, error ->
+                    trySend(ResponseType.Success(value!!.toObject(CenterModel::class.java)))
+                }
+
+            awaitClose {
+                close()
+            }
+        }
+
 }

@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.background
@@ -52,11 +53,12 @@ import com.chirag047.rapidservice.Common.textBetweenTwoLines
 import com.chirag047.rapidservice.R
 import com.chirag047.rapidservice.ViewModel.LoginViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController,sharedPreferences: SharedPreferences) {
 
     val loginViewModel: LoginViewModel = hiltViewModel()
 
@@ -209,7 +211,9 @@ fun LoginScreen(navController: NavController) {
                     loginViewModel.loginUser(emailText, passwordText).collect {
                         when (it) {
                             is ResponseType.Success -> {
-                                showProgressBar.value = false
+
+                                sharedPreferences.edit().putString("userName",it.data!!.userName).apply()
+                                sharedPreferences.edit().putString("userEmail",it.data!!.email).apply()
 
                                 navController.popBackStack()
                                 navController.popBackStack()
@@ -219,7 +223,28 @@ fun LoginScreen(navController: NavController) {
 
                                     navController.navigate("EnterDetailsScreenOne")
                                 } else {
-                                    navController.navigate("MainScreen")
+                                    loginViewModel.getSingleCenterDetails(it.data!!.userCenterId).collect{
+                                        when(it){
+                                            is ResponseType.Error -> {
+
+                                            }
+                                            is ResponseType.Loading -> {
+
+                                            }
+
+                                            is ResponseType.Success -> {
+
+                                                showProgressBar.value = false
+
+                                                sharedPreferences.edit().putString("corporateName",it.data!!.centerName).apply()
+                                                sharedPreferences.edit().putString("corporateAddress",it.data!!.centerAddress).apply()
+                                                sharedPreferences.edit().putString("corporateTime",it.data!!.centerTime).apply()
+
+                                                navController.navigate("MainScreen")
+                                            }
+                                        }
+                                    }
+
                                 }
 
 
@@ -242,10 +267,9 @@ fun LoginScreen(navController: NavController) {
 
                 }
             }
+            Spacer(modifier = Modifier.padding(40.dp))
+
         }
-
-        Spacer(modifier = Modifier.padding(40.dp))
-
         customProgressBar(show = showProgressBar.value, title = "Wait a moment...")
 
         SnackbarWithoutScaffold(

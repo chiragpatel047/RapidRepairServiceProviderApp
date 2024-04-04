@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,7 +41,7 @@ import com.chirag047.rapidservice.Common.textWithSeeAllText
 import com.chirag047.rapidservice.R
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController,sharedPreferences: SharedPreferences) {
 
     Column(Modifier.fillMaxSize()) {
 
@@ -77,7 +78,7 @@ fun HomeScreen(navController: NavController) {
                         )
                         Spacer(modifier = Modifier.padding(2.dp))
                         Text(
-                            text = "Jone snow",
+                            text = sharedPreferences.getString("userName","dear")!!,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily(Font(R.font.poppins_medium)),
                             textAlign = TextAlign.Center,
@@ -99,7 +100,7 @@ fun HomeScreen(navController: NavController) {
 
                 Column(Modifier.fillMaxWidth()) {
                     poppinsBoldCenterText(
-                        contentText = "Sodhi Garage Limited",
+                        contentText = sharedPreferences.getString("corporateName","")!!,
                         size = 16.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -130,7 +131,7 @@ fun HomeScreen(navController: NavController) {
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
-                                    text = "4063, Waterview Lane, New Maxico",
+                                    text =  sharedPreferences.getString("corporateAddress","")!!,
                                     fontSize = 12.sp,
                                     modifier = Modifier
                                         .padding(0.dp, 6.dp, 0.dp, 5.dp),
@@ -149,8 +150,9 @@ fun HomeScreen(navController: NavController) {
                                         .padding(0.dp, 8.dp, 0.dp, 8.dp),
                                     tint = MaterialTheme.colorScheme.primary
                                 )
+
                                 Text(
-                                    text = "8AM - 9PM",
+                                    text = sharedPreferences.getString("corporateTime","")!!,
                                     fontSize = 12.sp,
                                     modifier = Modifier
                                         .padding(0.dp, 6.dp, 0.dp, 5.dp),

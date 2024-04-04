@@ -56,7 +56,7 @@ fun MainScreen(navController: NavController, sharedPreferences: SharedPreference
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            navApp(bottomNavController, navController)
+            navApp(bottomNavController, navController,sharedPreferences)
         }
         bottomNavigationCustom(bottomNavController, list = list)
     }
@@ -119,11 +119,11 @@ fun bottomNavigationCustom(navController: NavController, list: List<NavigationIt
 }
 
 @Composable
-fun navApp(bottomNavController: NavHostController, navController: NavController) {
+fun navApp(bottomNavController: NavHostController, navController: NavController,sharedPreferences: SharedPreferences) {
 
     NavHost(navController = bottomNavController, startDestination = "HomeScreen") {
         composable(route = "HomeScreen") {
-            HomeScreen(navController)
+            HomeScreen(navController,sharedPreferences)
         }
         composable(route = "TrackScreen") {
             TrackScreen(navController)
@@ -132,7 +132,7 @@ fun navApp(bottomNavController: NavHostController, navController: NavController)
             MechanicScreen(navController)
         }
         composable(route = "ProfileScreen") {
-            ProfileScreen(navController)
+            ProfileScreen(navController,sharedPreferences)
         }
     }
 }

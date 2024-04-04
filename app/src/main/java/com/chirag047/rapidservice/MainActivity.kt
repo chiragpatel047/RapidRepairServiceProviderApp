@@ -79,10 +79,10 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
             WelcomeScreen(navController)
         }
         composable(route = "SignUpScreen") {
-            SignUpScreen(navController)
+            SignUpScreen(navController,sharedPreferences)
         }
         composable(route = "LoginScreen") {
-            LoginScreen(navController)
+            LoginScreen(navController,sharedPreferences)
         }
         composable(route = "ForgetPassword") {
             ForgetPassword(navController)
@@ -102,7 +102,8 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
                 corporateAddress,
                 corporateCity,
                 corporatePhoneNo,
-                corporateTime
+                corporateTime,
+                sharedPreferences
             )
         }
         composable(route = "MainScreen") {

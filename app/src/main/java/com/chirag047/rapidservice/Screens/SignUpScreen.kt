@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,7 +55,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController,sharedPreferences: SharedPreferences) {
 
     val signUpViewModel: SignUpScreenViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
@@ -245,6 +246,9 @@ fun SignUpScreen(navController: NavController) {
                         when (it) {
                             is ResponseType.Success -> {
                                 showProgressBar.value = false
+
+                                sharedPreferences.edit().putString("userName",nameText).apply()
+                                sharedPreferences.edit().putString("userEmail",emailText).apply()
 
                                 navController.popBackStack()
                                 navController.popBackStack()

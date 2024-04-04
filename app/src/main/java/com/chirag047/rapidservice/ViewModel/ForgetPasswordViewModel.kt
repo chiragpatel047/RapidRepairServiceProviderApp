@@ -18,6 +18,6 @@ class ForgetPasswordViewModel @Inject constructor(val authRepository: AuthReposi
     val response: StateFlow<ResponseType<String>>
         get() = _response
 
-    fun sendEmailPasswordResetLink(email: String) = authRepository.sendEmailPasswordResetLink(email)
+    suspend fun sendEmailPasswordResetLink(email: String) = authRepository.sendEmailPasswordResetLink(email)
 
 }

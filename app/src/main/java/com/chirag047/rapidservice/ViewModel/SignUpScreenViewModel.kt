@@ -16,6 +16,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpScreenViewModel @Inject constructor(val authRepository: AuthRepository) : ViewModel() {
 
-    fun createUser(username: String, email: String, password: String) =
+    suspend fun createUser(username: String, email: String, password: String) =
         authRepository.createUser(username, email, password)
 }

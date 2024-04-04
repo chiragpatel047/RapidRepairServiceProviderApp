@@ -67,7 +67,8 @@ fun ChooseLocationOnMapScreen(
     corporateAddress: String,
     corporateCity: String,
     corporatePhoneNo: String,
-    corporateTime: String
+    corporateTime: String,
+    sharedPreferences: SharedPreferences
 ) {
 
     val loadMap = remember {
@@ -207,14 +208,18 @@ fun ChooseLocationOnMapScreen(
                                 corporateCity,
                                 latitude.value,
                                 longitude.value
-
                             )
 
                             scope.launch(Dispatchers.Main) {
                                 chooseLocationOnMapViewModel.createNewCenter(centerModel).collect {
                                     when (it) {
                                         is ResponseType.Success -> {
+
                                             showProgressBar.value = false
+
+                                            sharedPreferences.edit().putString("corporateName",corporateName).apply()
+                                            sharedPreferences.edit().putString("corporateAddress",corporateAddress).apply()
+                                            sharedPreferences.edit().putString("corporateTime",corporateTime).apply()
 
                                             navController.popBackStack()
                                             navController.popBackStack()
@@ -237,10 +242,8 @@ fun ChooseLocationOnMapScreen(
                                             openMySnackbar.value = true
                                         }
                                     }
-
                                 }
                             }
-
                         }
                     }
                 }
