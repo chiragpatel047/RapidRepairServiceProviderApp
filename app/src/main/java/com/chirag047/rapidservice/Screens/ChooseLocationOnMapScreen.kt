@@ -220,6 +220,7 @@ fun ChooseLocationOnMapScreen(
                                             sharedPreferences.edit().putString("corporateName",corporateName).apply()
                                             sharedPreferences.edit().putString("corporateAddress",corporateAddress).apply()
                                             sharedPreferences.edit().putString("corporateTime",corporateTime).apply()
+                                            sharedPreferences.edit().putString("corporateId",centerModel.centerId).apply()
 
                                             navController.popBackStack()
                                             navController.popBackStack()

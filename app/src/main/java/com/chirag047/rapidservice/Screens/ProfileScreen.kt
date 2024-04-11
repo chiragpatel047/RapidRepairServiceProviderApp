@@ -41,7 +41,7 @@ import com.chirag047.rapidservice.Common.poppinsText
 import com.chirag047.rapidservice.R
 
 @Composable
-fun ProfileScreen(navController: NavController,sharedPreferences: SharedPreferences) {
+fun ProfileScreen(navController: NavController, sharedPreferences: SharedPreferences) {
     Box(Modifier.fillMaxSize()) {
 
         Column(Modifier.fillMaxWidth()) {
@@ -67,6 +67,7 @@ fun ProfileScreen(navController: NavController,sharedPreferences: SharedPreferen
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Image(
                         painter = painterResource(id = R.drawable.profile_image_temp),
                         contentDescription = "",
@@ -76,10 +77,10 @@ fun ProfileScreen(navController: NavController,sharedPreferences: SharedPreferen
                     )
 
                     Spacer(modifier = Modifier.padding(4.dp))
-                    
+
                     Column() {
                         Text(
-                            text = sharedPreferences.getString("userName","")!!,
+                            text = sharedPreferences.getString("userName", "")!!,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily(Font(R.font.poppins_medium)),
@@ -88,7 +89,7 @@ fun ProfileScreen(navController: NavController,sharedPreferences: SharedPreferen
                                 .padding(10.dp, 0.dp)
                         )
                         Text(
-                            text = sharedPreferences.getString("userEmail","")!!,
+                            text = sharedPreferences.getString("userEmail", "")!!,
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.poppins_medium)),
                             modifier = Modifier

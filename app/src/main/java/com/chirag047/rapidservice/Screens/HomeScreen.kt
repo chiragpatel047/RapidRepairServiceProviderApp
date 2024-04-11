@@ -1,6 +1,7 @@
 package com.chirag047.rapidservice.Screens
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,22 +35,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.GrayFilledSimpleButton
+import com.chirag047.rapidservice.Common.ResponseType
 import com.chirag047.rapidservice.Common.SingleDoneService
 import com.chirag047.rapidservice.Common.SingleMechanic
 import com.chirag047.rapidservice.Common.SingleSerivceRequest
 import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Common.poppinsBoldText
 import com.chirag047.rapidservice.Common.textWithSeeAllText
+import com.chirag047.rapidservice.Model.OrderModel
 import com.chirag047.rapidservice.R
+import com.chirag047.rapidservice.ViewModel.HomeScreenViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen(navController: NavController,sharedPreferences: SharedPreferences) {
+fun HomeScreen(navController: NavController, sharedPreferences: SharedPreferences) {
 
     Column(Modifier.fillMaxSize()) {
 
         val scroll = rememberScrollState()
+        val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+        val scope = rememberCoroutineScope()
+
+        val pendingOrdersList = remember {
+            mutableStateOf(mutableListOf(OrderModel()))
+        }
 
         Column(
             Modifier
@@ -78,7 +95,7 @@ fun HomeScreen(navController: NavController,sharedPreferences: SharedPreferences
                         )
                         Spacer(modifier = Modifier.padding(2.dp))
                         Text(
-                            text = sharedPreferences.getString("userName","dear")!!,
+                            text = sharedPreferences.getString("userName", "dear")!!,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily(Font(R.font.poppins_medium)),
                             textAlign = TextAlign.Center,
@@ -100,7 +117,7 @@ fun HomeScreen(navController: NavController,sharedPreferences: SharedPreferences
 
                 Column(Modifier.fillMaxWidth()) {
                     poppinsBoldCenterText(
-                        contentText = sharedPreferences.getString("corporateName","")!!,
+                        contentText = sharedPreferences.getString("corporateName", "")!!,
                         size = 16.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -131,7 +148,7 @@ fun HomeScreen(navController: NavController,sharedPreferences: SharedPreferences
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
-                                    text =  sharedPreferences.getString("corporateAddress","")!!,
+                                    text = sharedPreferences.getString("corporateAddress", "")!!,
                                     fontSize = 12.sp,
                                     modifier = Modifier
                                         .padding(0.dp, 6.dp, 0.dp, 5.dp),
@@ -152,7 +169,7 @@ fun HomeScreen(navController: NavController,sharedPreferences: SharedPreferences
                                 )
 
                                 Text(
-                                    text = sharedPreferences.getString("corporateTime","")!!,
+                                    text = sharedPreferences.getString("corporateTime", "")!!,
                                     fontSize = 12.sp,
                                     modifier = Modifier
                                         .padding(0.dp, 6.dp, 0.dp, 5.dp),
@@ -186,19 +203,38 @@ fun HomeScreen(navController: NavController,sharedPreferences: SharedPreferences
                 navController.navigate("ServiceRequestListScreen")
             }
 
-            //SingleSerivceRequest(R.drawable.car_icon,"Jone snow","TATA Aviniya | Battery")
-            SingleSerivceRequest(
-                R.drawable.motorcycle_icon,
-                "Mukesh patel",
-                "Yamaha R15 | Petrol",
-                navController
-            )
-            SingleSerivceRequest(
-                R.drawable.car_icon,
-                "Tushar gohil",
-                "Maruti Swift | Diesel",
-                navController
-            )
+            LaunchedEffect(key1 = Unit) {
+                scope.launch(Dispatchers.Main) {
+
+                    val corporateId = sharedPreferences.getString("corporateId", "")!!
+
+                    Log.d("corporateId", corporateId)
+
+                    homeScreenViewModel.getPendingOrderRequests(corporateId).collect {
+                        when (it) {
+                            is ResponseType.Error -> {
+
+                            }
+
+                            is ResponseType.Loading -> {
+
+                            }
+
+                            is ResponseType.Success -> {
+
+                                val list = mutableListOf(OrderModel())
+                                list.clear()
+                                list.addAll(it.data!!)
+                                Log.d("corporateId", (it.data!!.toString()))
+                                pendingOrdersList.value = list
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            loadPendingRequests(pendingOrdersList.value, navController)
 
             textWithSeeAllText(title = "Your Mechanic list") {
                 navController.navigate("MechanicListScreen")
@@ -215,4 +251,32 @@ fun HomeScreen(navController: NavController,sharedPreferences: SharedPreferences
         }
 
     }
+}
+
+@Composable
+fun loadPendingRequests(list: List<OrderModel>, navController: NavController) {
+
+    list.forEach {
+        var icon = R.drawable.car_icon
+
+        if (it.vehicleType.equals("Car")) {
+            icon = R.drawable.car_icon
+        } else if (it.vehicleType.equals("Motorcycle")) {
+            icon = R.drawable.motorcycle_icon
+        } else if (it.vehicleType.equals("Rickshaw")) {
+            icon = R.drawable.rickshaw_icon
+        } else if (it.vehicleType.equals("Truck")) {
+            icon = R.drawable.truck_icon
+        } else if (it.vehicleType.equals("Bus")) {
+            icon = R.drawable.bus_icon
+        }
+
+        SingleSerivceRequest(
+            icon, it.vehicleOwner,
+            it.vehicleCompany + " " + it.vehicleModel + " | " + it.vehicleFuelType,
+            navController
+        )
+
+    }
+
 }
