@@ -79,10 +79,10 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
             WelcomeScreen(navController)
         }
         composable(route = "SignUpScreen") {
-            SignUpScreen(navController,sharedPreferences)
+            SignUpScreen(navController, sharedPreferences)
         }
         composable(route = "LoginScreen") {
-            LoginScreen(navController,sharedPreferences)
+            LoginScreen(navController, sharedPreferences)
         }
         composable(route = "ForgetPassword") {
             ForgetPassword(navController)
@@ -107,7 +107,7 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
             )
         }
         composable(route = "MainScreen") {
-            MainScreen(navController,sharedPreferences)
+            MainScreen(navController, sharedPreferences)
         }
         composable(route = "ServiceRequestListScreen") {
             ServiceRequestListScreen(navController)
@@ -133,8 +133,42 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
         composable(route = "EditCorporateScreen") {
             EditCorporateScreen(navController)
         }
-        composable(route = "ClientIssueDetailScreen") {
-            ClientIssueDetailScreen(navController)
+        composable(route = "ClientIssueDetailScreen" + "/{orderId}/{userId}/{corporateId}/{corporateName}/{corporateAddress}/{vehicleOwner}/{vehicleType}/{vehicleCompany}/{vehicleModel}/{vehicleFuelType}/{vehicleLicensePlate}/{serviceType}/{clientAddress}/{clientLatitude}/{clientLongitude}/{clientAddedText}") {
+
+            val orderId = it.arguments?.getString("orderId")!!
+            val userId = it.arguments?.getString("userId")!!
+            val corporateId = it.arguments?.getString("corporateId")!!
+            val corporateName = it.arguments?.getString("corporateName")!!
+            val corporateAddress = it.arguments?.getString("corporateAddress")!!
+            val serviceType = it.arguments?.getString("serviceType")!!
+            val vehicleOwner = it.arguments?.getString("vehicleOwner")!!
+            val vehicleType = it.arguments?.getString("vehicleType")!!
+            val vehicleCompany = it.arguments?.getString("vehicleCompany")!!
+            val vehicleModel = it.arguments?.getString("vehicleModel")!!
+            val vehicleFuelType = it.arguments?.getString("vehicleFuelType")!!
+            val vehicleLicensePlate = it.arguments?.getString("vehicleLicensePlate")!!
+            val clientAddress = it.arguments?.getString("clientAddress")!!
+            val clientLatitude = it.arguments?.getString("clientLatitude")!!
+            val clientLongitude = it.arguments?.getString("clientLongitude")!!
+            val clientAddedText = it.arguments?.getString("clientAddedText")!!
+
+            ClientIssueDetailScreen(navController,
+                orderId,
+                userId,
+                corporateId,
+                corporateName,
+                corporateAddress,
+                serviceType,
+                vehicleOwner,
+                vehicleType,
+                vehicleCompany,
+                vehicleModel,
+                vehicleFuelType,
+                vehicleLicensePlate,
+                clientAddress,
+                clientLatitude,
+                clientLongitude,
+                clientAddedText)
         }
     }
 }

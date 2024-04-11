@@ -257,23 +257,8 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
 fun loadPendingRequests(list: List<OrderModel>, navController: NavController) {
 
     list.forEach {
-        var icon = R.drawable.car_icon
-
-        if (it.vehicleType.equals("Car")) {
-            icon = R.drawable.car_icon
-        } else if (it.vehicleType.equals("Motorcycle")) {
-            icon = R.drawable.motorcycle_icon
-        } else if (it.vehicleType.equals("Rickshaw")) {
-            icon = R.drawable.rickshaw_icon
-        } else if (it.vehicleType.equals("Truck")) {
-            icon = R.drawable.truck_icon
-        } else if (it.vehicleType.equals("Bus")) {
-            icon = R.drawable.bus_icon
-        }
-
         SingleSerivceRequest(
-            icon, it.vehicleOwner,
-            it.vehicleCompany + " " + it.vehicleModel + " | " + it.vehicleFuelType,
+            it,
             navController
         )
 

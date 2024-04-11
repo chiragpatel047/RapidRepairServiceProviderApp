@@ -33,7 +33,25 @@ import com.chirag047.rapidservice.Common.poppinsText
 import com.chirag047.rapidservice.R
 
 @Composable
-fun ClientIssueDetailScreen(navController: NavController) {
+fun ClientIssueDetailScreen(
+    navController: NavController,
+    orderId: String,
+    userId: String,
+    corporateId: String,
+    corporateName: String,
+    corporateAddress: String,
+    serviceType: String,
+    vehicleOwner: String,
+    vehicleType: String,
+    vehicleCompany: String,
+    vehicleModel: String,
+    vehicleFuelType: String,
+    vehicleLicensePlate: String,
+    clientAddress: String,
+    clientLatitude: String,
+    clientLongitude: String,
+    clientAddedText: String
+) {
     Box(Modifier.fillMaxSize()) {
         val scroll = rememberScrollState()
         Column(Modifier.fillMaxWidth()) {
@@ -81,12 +99,12 @@ fun ClientIssueDetailScreen(navController: NavController) {
                             colanText()
                         }
                         Column {
-                            detailContent("Ankit Patel")
-                            detailContent("Car")
-                            detailContent("TATA")
-                            detailContent("Aviniya")
-                            detailContent("Battery")
-                            detailContent("GJ 05 SC 3006")
+                            detailContent(vehicleOwner)
+                            detailContent(vehicleType)
+                            detailContent(vehicleCompany)
+                            detailContent(vehicleModel)
+                            detailContent(vehicleFuelType)
+                            detailContent(vehicleLicensePlate)
                         }
                     }
                 }
@@ -122,9 +140,9 @@ fun ClientIssueDetailScreen(navController: NavController) {
                             colanText()
                         }
                         Column {
-                            detailContent("Flat Tyre")
+                            detailContent(serviceType)
                             detailContent("Locate Client")
-                            detailContent("4069, Streetview Lane, Las vagas")
+                            detailContent(clientAddress)
                         }
                     }
                 }
@@ -149,7 +167,7 @@ fun ClientIssueDetailScreen(navController: NavController) {
                         modifier = Modifier.padding(15.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        detailContent("Experiencing a flat tire on my vehicle, requiring immediate attention and repair to ensure safe and uninterrupted travel")
+                        detailContent(clientAddedText)
                     }
                 }
 
@@ -163,7 +181,7 @@ fun ClientIssueDetailScreen(navController: NavController) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(20.dp,25.dp)
+                        .padding(20.dp, 25.dp)
                 ) {
                     Row(
                         modifier = Modifier

@@ -37,10 +37,25 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.chirag047.rapidservice.Model.OrderModel
 import com.chirag047.rapidservice.R
 
 @Composable
-fun SingleSerivceRequest(icon : Int, name : String,carDetails : String,navController: NavController) {
+fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
+
+    var icon = R.drawable.car_icon
+
+    if (orderModel.vehicleType.equals("Car")) {
+        icon = R.drawable.car_icon
+    } else if (orderModel.vehicleType.equals("Motorcycle")) {
+        icon = R.drawable.motorcycle_icon
+    } else if (orderModel.vehicleType.equals("Rickshaw")) {
+        icon = R.drawable.rickshaw_icon
+    } else if (orderModel.vehicleType.equals("Truck")) {
+        icon = R.drawable.truck_icon
+    } else if (orderModel.vehicleType.equals("Bus")) {
+        icon = R.drawable.bus_icon
+    }
 
     Column(
         Modifier
@@ -84,13 +99,13 @@ fun SingleSerivceRequest(icon : Int, name : String,carDetails : String,navContro
             Column(Modifier.weight(1f)) {
 
                 poppinsBoldText(
-                    contentText = name,
+                    contentText = orderModel.vehicleOwner,
                     size = 14.sp,
                     modifier = Modifier
                         .padding(10.dp, 0.dp)
                 )
                 poppinsText(
-                    contentText = carDetails,
+                    contentText = orderModel.vehicleCompany + " " + orderModel.vehicleModel + " | " + orderModel.vehicleFuelType,
                     size = 12.sp,
                     modifier = Modifier
                         .padding(10.dp, 0.dp)
@@ -143,8 +158,10 @@ fun SingleSerivceRequest(icon : Int, name : String,carDetails : String,navContro
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colorScheme.primary).clickable {
-                        navController.navigate("ClientIssueDetailScreen")
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clickable {
+
+                        navController.navigate("ClientIssueDetailScreen"+ "/${orderModel.orderId}"+ "/${orderModel.userId}"+ "/${orderModel.corporateId}"+ "/${orderModel.corporateName}"+ "/${orderModel.corporateAddress}"+ "/${orderModel.vehicleOwner}"+ "/${orderModel.vehicleType}"+ "/${orderModel.vehicleCompany}"+ "/${orderModel.vehicleModel}"+ "/${orderModel.vehicleFuelType}"+ "/${orderModel.vehicleLicensePlate}"+ "/${orderModel.serviceType}"+ "/${orderModel.clientAddress}"+ "/${orderModel.clientLatitude}"+ "/${orderModel.clientLongitude}"+ "/${orderModel.clientAddedText}")
                     }
 
             ) {
