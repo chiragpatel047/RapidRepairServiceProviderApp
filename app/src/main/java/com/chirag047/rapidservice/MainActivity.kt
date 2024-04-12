@@ -19,6 +19,7 @@ import com.chirag047.rapidservice.Screens.AddNewMechanicScreen
 import com.chirag047.rapidservice.Screens.ChangePasswordScreen
 import com.chirag047.rapidservice.Screens.ChooseLocationOnMapScreen
 import com.chirag047.rapidservice.Screens.ClientIssueDetailScreen
+import com.chirag047.rapidservice.Screens.ClientLocationScreen
 import com.chirag047.rapidservice.Screens.EditCorporateScreen
 import com.chirag047.rapidservice.Screens.EditProfile
 import com.chirag047.rapidservice.Screens.EnterDetailsScreenOne
@@ -152,7 +153,8 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
             val clientLongitude = it.arguments?.getString("clientLongitude")!!
             val clientAddedText = it.arguments?.getString("clientAddedText")!!
 
-            ClientIssueDetailScreen(navController,
+            ClientIssueDetailScreen(
+                navController,
                 orderId,
                 userId,
                 corporateId,
@@ -168,7 +170,19 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
                 clientAddress,
                 clientLatitude,
                 clientLongitude,
-                clientAddedText)
+                clientAddedText
+            )
+        }
+        composable(route = "ClientLocationScreen" + "/{clientLatitude}/{clientLongitude}") {
+
+
+            val clientLatitude = it.arguments?.getString("clientLatitude")!!
+            val clientLongitude = it.arguments?.getString("clientLongitude")!!
+
+            ClientLocationScreen(
+                navController, clientLatitude,
+                clientLongitude
+            )
         }
     }
 }

@@ -2,6 +2,7 @@ package com.chirag047.rapidservice.Screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -99,12 +100,42 @@ fun ClientIssueDetailScreen(
                             colanText()
                         }
                         Column {
-                            detailContent(vehicleOwner)
-                            detailContent(vehicleType)
-                            detailContent(vehicleCompany)
-                            detailContent(vehicleModel)
-                            detailContent(vehicleFuelType)
-                            detailContent(vehicleLicensePlate)
+                            detailContent(
+                                vehicleOwner,
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
+                            detailContent(
+                                vehicleType,
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
+                            detailContent(
+                                vehicleCompany,
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
+                            detailContent(
+                                vehicleModel,
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
+                            detailContent(
+                                vehicleFuelType,
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
+                            detailContent(
+                                vehicleLicensePlate,
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
                         }
                     }
                 }
@@ -140,9 +171,24 @@ fun ClientIssueDetailScreen(
                             colanText()
                         }
                         Column {
-                            detailContent(serviceType)
-                            detailContent("Locate Client")
-                            detailContent(clientAddress)
+                            detailContent(
+                                serviceType,
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
+                            detailContent(
+                                "Locate Client",
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
+                            detailContent(
+                                clientAddress,
+                                navController,
+                                clientLatitude,
+                                clientLongitude
+                            )
                         }
                     }
                 }
@@ -167,7 +213,12 @@ fun ClientIssueDetailScreen(
                         modifier = Modifier.padding(15.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        detailContent(clientAddedText)
+                        detailContent(
+                            clientAddedText,
+                            navController,
+                            clientLatitude,
+                            clientLongitude
+                        )
                     }
                 }
 
@@ -249,7 +300,12 @@ fun colanText() {
 }
 
 @Composable
-fun detailContent(content: String) {
+fun detailContent(
+    content: String,
+    navController: NavController,
+    clientLatitude: String,
+    clientLongitude: String
+) {
     Text(
         text = content,
         fontFamily = FontFamily(Font(R.font.poppins_medium)),
@@ -258,5 +314,11 @@ fun detailContent(content: String) {
         color = if (content.equals("Locate Client")) MaterialTheme.colorScheme.primary else Color.Unspecified,
         modifier = Modifier
             .padding(15.dp, 5.dp, 15.dp, 0.dp)
+            .clickable {
+                if (content.equals("Locate Client")) {
+                    navController.navigate("ClientLocationScreen" + "/$clientLatitude" + "/$clientLongitude")
+                }
+            }
     )
 }
+

@@ -110,9 +110,7 @@ fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
                     modifier = Modifier
                         .padding(10.dp, 0.dp)
                 )
-
                 //Spacer(modifier = Modifier.padding(4.dp))
-
             }
             //Spacer(modifier = Modifier.padding(5.dp))
         }
@@ -160,10 +158,8 @@ fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
                     .clip(RoundedCornerShape(25.dp))
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable {
-
-                        navController.navigate("ClientIssueDetailScreen"+ "/${orderModel.orderId}"+ "/${orderModel.userId}"+ "/${orderModel.corporateId}"+ "/${orderModel.corporateName}"+ "/${orderModel.corporateAddress}"+ "/${orderModel.vehicleOwner}"+ "/${orderModel.vehicleType}"+ "/${orderModel.vehicleCompany}"+ "/${orderModel.vehicleModel}"+ "/${orderModel.vehicleFuelType}"+ "/${orderModel.vehicleLicensePlate}"+ "/${orderModel.serviceType}"+ "/${orderModel.clientAddress}"+ "/${orderModel.clientLatitude}"+ "/${orderModel.clientLongitude}"+ "/${orderModel.clientAddedText}")
+                        navController.navigate("ClientIssueDetailScreen" + "/${orderModel.orderId}" + "/${orderModel.userId}" + "/${orderModel.corporateId}" + "/${orderModel.corporateName}" + "/${orderModel.corporateAddress}" + "/${orderModel.vehicleOwner}" + "/${orderModel.vehicleType}" + "/${orderModel.vehicleCompany}" + "/${orderModel.vehicleModel}" + "/${orderModel.vehicleFuelType}" + "/${orderModel.vehicleLicensePlate}" + "/${orderModel.serviceType}" + "/${orderModel.clientAddress}" + "/${orderModel.clientLatitude}" + "/${orderModel.clientLongitude}" + "/${orderModel.clientAddedText}")
                     }
-
             ) {
                 Text(
                     text = "Details",
@@ -173,9 +169,6 @@ fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
                     modifier = Modifier.padding(15.dp, 5.dp)
                 )
             }
-
         }
-
     }
-
 }
