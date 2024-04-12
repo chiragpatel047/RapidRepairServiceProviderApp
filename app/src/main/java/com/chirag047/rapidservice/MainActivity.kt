@@ -173,6 +173,7 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
                 clientAddedText
             )
         }
+
         composable(route = "ClientLocationScreen" + "/{clientLatitude}/{clientLongitude}") {
 
 
