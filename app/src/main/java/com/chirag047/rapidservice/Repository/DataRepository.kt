@@ -95,11 +95,29 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val a
             firestore.collection("mechanicUsers")
                 .document(mechanicUid)
                 .update("centerId", centerId, "centerName", centerName).addOnCompleteListener {
-                    if(it.isSuccessful){
+                    if (it.isSuccessful) {
                         trySend(ResponseType.Success("Added successfully"))
-                    }else{
+                    } else {
                         trySend(ResponseType.Error(it.exception!!.message.toString()))
                     }
+                }
+
+            awaitClose {
+                close()
+            }
+        }
+
+    suspend fun getMyAllMechanics(
+        centerId: String
+    ): Flow<ResponseType<List<MechanicModel>>> =
+        callbackFlow {
+
+            trySend(ResponseType.Loading())
+
+            firestore.collection("mechanicUsers")
+                .whereEqualTo("centerId", centerId)
+                .addSnapshotListener { value, error ->
+                    trySend(ResponseType.Success(value!!.toObjects(MechanicModel::class.java)))
                 }
 
             awaitClose {

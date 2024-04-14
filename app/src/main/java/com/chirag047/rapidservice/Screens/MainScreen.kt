@@ -129,7 +129,7 @@ fun navApp(bottomNavController: NavHostController, navController: NavController,
             TrackScreen(navController)
         }
         composable(route = "MechanicScreen") {
-            MechanicScreen(navController)
+            MechanicScreen(navController,sharedPreferences)
         }
         composable(route = "ProfileScreen") {
             ProfileScreen(navController,sharedPreferences)
