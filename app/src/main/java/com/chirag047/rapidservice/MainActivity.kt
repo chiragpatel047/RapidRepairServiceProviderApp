@@ -120,7 +120,7 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
             ServiceHistoryScreen(navController)
         }
         composable(route = "AddNewMechanicScreen") {
-            AddNewMechanicScreen(navController)
+            AddNewMechanicScreen(navController,sharedPreferences)
         }
         composable(route = "EditProfile") {
             EditProfile(navController)

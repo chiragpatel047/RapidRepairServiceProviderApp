@@ -27,13 +27,13 @@ import kotlinx.coroutines.delay
 fun ClientLocationScreen(
     navController: NavController, clientLatitude: String,
     clientLongitude: String
+
 ) {
     Box(Modifier.fillMaxSize()) {
 
         val loadMap = remember {
             mutableStateOf(false)
         }
-
 
         LaunchedEffect(key1 = Unit) {
             delay(500)
