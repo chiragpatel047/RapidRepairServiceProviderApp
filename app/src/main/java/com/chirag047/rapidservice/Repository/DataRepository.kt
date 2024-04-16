@@ -107,6 +107,29 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val a
             }
         }
 
+    suspend fun deleteMechanic(
+        mechanicUid: String
+    ): Flow<ResponseType<String>> =
+        callbackFlow {
+
+            trySend(ResponseType.Loading())
+
+            firestore.collection("mechanicUsers")
+                .document(mechanicUid)
+                .update("centerId", "", "centerName", "Not joined yet")
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(ResponseType.Success("Deleted successfully"))
+                    } else {
+                        trySend(ResponseType.Error(it.exception!!.message.toString()))
+                    }
+                }
+
+            awaitClose {
+                close()
+            }
+        }
+
     suspend fun getMyAllMechanics(
         centerId: String
     ): Flow<ResponseType<List<MechanicModel>>> =

@@ -1,6 +1,5 @@
 package com.chirag047.rapidservice.ViewModel
 
-import android.view.View
 import androidx.lifecycle.ViewModel
 import com.chirag047.rapidservice.Common.ResponseType
 import com.chirag047.rapidservice.Model.MechanicModel
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class MechanicScreenViewModel @Inject constructor(val dataRepository: DataRepository) :
+class SelectMechanicForServiceViewModel @Inject constructor(val dataRepository: DataRepository) :
     ViewModel() {
 
     private val _mechanicData =
@@ -27,8 +26,5 @@ class MechanicScreenViewModel @Inject constructor(val dataRepository: DataReposi
         }
     }
 
-    suspend fun deleteMechanic(
-        mechanicUid: String
-    ) = dataRepository.deleteMechanic(mechanicUid)
 
 }

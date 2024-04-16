@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.chirag047.rapidservice.R
 
 @Composable
-fun ManageSingleMechanic(name: String, status: String) {
+fun ManageSingleMechanic(name: String, status: String, deleteMechanic: () -> Unit) {
 
     val showDropMenu = remember {
         mutableStateOf(false)
@@ -107,20 +107,26 @@ fun ManageSingleMechanic(name: String, status: String) {
                 )
             }
 
-            DropDownMenu(showDropMenu.value)
+            DropDownMenu(showDropMenu.value) {
+                deleteMechanic.invoke()
+            }
 
             Spacer(modifier = Modifier.padding(5.dp))
 
         }
 
-        Row( Modifier
-            .fillMaxWidth()
-            .padding(15.dp, 5.dp, 15.dp, 15.dp),) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(15.dp, 5.dp, 15.dp, 15.dp),
+        ) {
             Row(
-                modifier = Modifier.border(
-                    1.dp, MaterialTheme.colorScheme.primary,
-                    RoundedCornerShape(25.dp)
-                ).weight(1f)
+                modifier = Modifier
+                    .border(
+                        1.dp, MaterialTheme.colorScheme.primary,
+                        RoundedCornerShape(25.dp)
+                    )
+                    .weight(1f)
             ) {
                 Text(
                     text = "Send notification",
@@ -128,15 +134,19 @@ fun ManageSingleMechanic(name: String, status: String) {
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                    modifier = Modifier.padding(15.dp, 8.dp).weight(1f)
+                    modifier = Modifier
+                        .padding(15.dp, 8.dp)
+                        .weight(1f)
                 )
             }
             Spacer(modifier = Modifier.padding(2.dp))
             Row(
-                modifier = Modifier.border(
-                    1.dp, MaterialTheme.colorScheme.primary,
-                    RoundedCornerShape(25.dp)
-                ).weight(1f)
+                modifier = Modifier
+                    .border(
+                        1.dp, MaterialTheme.colorScheme.primary,
+                        RoundedCornerShape(25.dp)
+                    )
+                    .weight(1f)
             ) {
                 Text(
                     text = "Call now",
@@ -144,7 +154,9 @@ fun ManageSingleMechanic(name: String, status: String) {
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                    modifier = Modifier.padding(15.dp, 8.dp).weight(1f)
+                    modifier = Modifier
+                        .padding(15.dp, 8.dp)
+                        .weight(1f)
                 )
             }
             Spacer(modifier = Modifier.padding(5.dp))

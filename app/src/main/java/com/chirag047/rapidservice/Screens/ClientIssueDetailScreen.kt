@@ -259,6 +259,9 @@ fun ClientIssueDetailScreen(
                             .clip(RoundedCornerShape(25.dp))
                             .background(MaterialTheme.colorScheme.primary)
                             .weight(1f)
+                            .clickable {
+                                navController.navigate("SelectMechanicForService")
+                            }
                     ) {
                         Text(
                             text = "Accept",

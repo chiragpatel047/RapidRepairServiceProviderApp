@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.chirag047.rapidservice.R
 
 @Composable
-fun DropDownMenu(show: Boolean){
+fun DropDownMenu(show: Boolean, deleteMechanic: () -> Unit) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(show) }
 
@@ -55,25 +55,13 @@ fun DropDownMenu(show: Boolean){
             DropdownMenuItem(
                 text = {
                     Text(
-                        "Edit",
-                        fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                        fontSize = 12.sp
-                    )
-                },
-                onClick = {
-
-                }
-            )
-            DropdownMenuItem(
-                text = {
-                    Text(
                         "Delete",
                         fontFamily = FontFamily(Font(R.font.poppins_medium)),
                         fontSize = 12.sp
                     )
                 },
                 onClick = {
-
+                    deleteMechanic.invoke()
                 }
             )
         }

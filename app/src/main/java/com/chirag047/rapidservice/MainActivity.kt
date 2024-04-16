@@ -28,6 +28,7 @@ import com.chirag047.rapidservice.Screens.LoginScreen
 import com.chirag047.rapidservice.Screens.MainScreen
 import com.chirag047.rapidservice.Screens.MechanicListScreen
 import com.chirag047.rapidservice.Screens.NotificationScreen
+import com.chirag047.rapidservice.Screens.SelectMechanicForService
 import com.chirag047.rapidservice.Screens.ServiceHistoryScreen
 import com.chirag047.rapidservice.Screens.ServiceRequestListScreen
 import com.chirag047.rapidservice.Screens.SignUpScreen
@@ -120,7 +121,7 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
             ServiceHistoryScreen(navController)
         }
         composable(route = "AddNewMechanicScreen") {
-            AddNewMechanicScreen(navController,sharedPreferences)
+            AddNewMechanicScreen(navController, sharedPreferences)
         }
         composable(route = "EditProfile") {
             EditProfile(navController)
@@ -184,6 +185,10 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
                 navController, clientLatitude,
                 clientLongitude
             )
+        }
+
+        composable(route = "SelectMechanicForService") {
+            SelectMechanicForService(navController, sharedPreferences)
         }
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,6 +33,7 @@ import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Model.MechanicModel
 import com.chirag047.rapidservice.R
 import com.chirag047.rapidservice.ViewModel.MechanicScreenViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -45,49 +47,54 @@ fun MechanicScreen(navController: NavController, sharedPreferences: SharedPrefer
         mutableListOf<MechanicModel>()
     }
 
+    val centerId = sharedPreferences.getString("corporateId", "")
 
     LaunchedEffect(key1 = Unit) {
-        scope.launch(Dispatchers.Main) {
-            val centerId = sharedPreferences.getString("corporateId", "")
-            mechanicScreenViewModel.getMyAllMechanics(centerId!!).collect {
-                when (it) {
-                    is ResponseType.Error -> {
-
-                    }
-
-                    is ResponseType.Loading -> {
-
-                    }
-
-                    is ResponseType.Success -> {
-                        mechanicList.clear()
-                        mechanicList.addAll(it.data!!)
-                    }
-                }
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            mechanicScreenViewModel.getMyAllMechanics(centerId!!)
         }
     }
 
+    val state = mechanicScreenViewModel.mechanicData.collectAsState()
+
+
     Box(Modifier.fillMaxSize()) {
 
-        Column(Modifier.fillMaxWidth()) {
-            Column(Modifier.fillMaxWidth()) {
-                poppinsBoldCenterText(
-                    contentText = "Mechanics",
-                    size = 16.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(15.dp)
-                )
+        when (state.value) {
+            is ResponseType.Error -> {
+
             }
 
-            Column(
-                Modifier
-                    .fillMaxWidth()
-            ) {
-                loadMechanics(mechanicList)
+            is ResponseType.Loading -> {
+
+            }
+
+            is ResponseType.Success -> {
+                mechanicList.clear()
+                mechanicList.addAll(state.value.data!!)
+
+                Column(Modifier.fillMaxWidth()) {
+                    Column(Modifier.fillMaxWidth()) {
+                        poppinsBoldCenterText(
+                            contentText = "Mechanics",
+                            size = 16.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(15.dp)
+                        )
+                    }
+
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                    ) {
+                        loadMechanics(mechanicList, mechanicScreenViewModel)
+                    }
+                }
+
             }
         }
+
         ExtendedFloatingActionButton(
             text = {
                 Text(
@@ -108,8 +115,28 @@ fun MechanicScreen(navController: NavController, sharedPreferences: SharedPrefer
 }
 
 @Composable
-fun loadMechanics(list: List<MechanicModel>) {
+fun loadMechanics(list: List<MechanicModel>, mechanicScreenViewModel: MechanicScreenViewModel) {
+    val scope = rememberCoroutineScope()
+
     list.forEach {
-        ManageSingleMechanic(it.userName, it.mechanicStatus)
+        ManageSingleMechanic(it.userName, it.mechanicStatus) {
+            scope.launch(Dispatchers.Main) {
+                mechanicScreenViewModel.deleteMechanic(it.uid).collect {
+                    when (it) {
+                        is ResponseType.Error -> {
+
+                        }
+
+                        is ResponseType.Loading -> {
+
+                        }
+
+                        is ResponseType.Success -> {
+
+                        }
+                    }
+                }
+            }
+        }
     }
 }

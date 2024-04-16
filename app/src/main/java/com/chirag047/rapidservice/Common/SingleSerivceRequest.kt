@@ -141,7 +141,9 @@ fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
                     modifier = Modifier.border(
                         1.dp, MaterialTheme.colorScheme.primary,
                         RoundedCornerShape(25.dp)
-                    )
+                    ).clickable {
+                        navController.navigate("SelectMechanicForService")
+                    }
                 ) {
                     Text(
                         text = "Accept",
