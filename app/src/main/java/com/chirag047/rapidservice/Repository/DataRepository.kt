@@ -148,4 +148,45 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val a
             }
         }
 
+    suspend fun submitOrderToMechanic(
+        orderId: String,
+        mechanicId: String
+    ): Flow<ResponseType<String>> =
+        callbackFlow {
+
+            trySend(ResponseType.Loading())
+
+            firestore.collection("orders")
+                .document(orderId)
+                .update("mechanicId", mechanicId, "orderStatus", "Mechanic Pending")
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(ResponseType.Success("Submitted successfully"))
+                    } else {
+                        trySend(ResponseType.Error("Something went wrong"))
+                    }
+                }
+
+            awaitClose {
+                close()
+            }
+        }
+
+    suspend fun getMyOrdersRequest(corporateId: String,requestType : String): Flow<ResponseType<List<OrderModel>>> =
+        callbackFlow {
+
+            trySend(ResponseType.Loading())
+
+            firestore.collection("orders")
+                .whereEqualTo("corporateId", corporateId)
+                .whereEqualTo("orderStatus", requestType)
+                .addSnapshotListener { value, error ->
+                    trySend(ResponseType.Success(value!!.toObjects(OrderModel::class.java)))
+                }
+
+            awaitClose {
+                close()
+            }
+        }
+
 }

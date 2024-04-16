@@ -126,7 +126,7 @@ fun navApp(bottomNavController: NavHostController, navController: NavController,
             HomeScreen(navController,sharedPreferences)
         }
         composable(route = "TrackScreen") {
-            TrackScreen(navController)
+            TrackScreen(navController,sharedPreferences)
         }
         composable(route = "MechanicScreen") {
             MechanicScreen(navController,sharedPreferences)

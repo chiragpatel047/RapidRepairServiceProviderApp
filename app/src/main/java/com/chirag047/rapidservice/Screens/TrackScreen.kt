@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,16 +34,37 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.chirag047.rapidservice.Common.NoDataText
+import com.chirag047.rapidservice.Common.ResponseType
 import com.chirag047.rapidservice.Common.TrackHistorySingle
 import com.chirag047.rapidservice.Common.TrackSingle
 import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Common.poppinsBoldText
+import com.chirag047.rapidservice.Common.poppinsText
 import com.chirag047.rapidservice.Common.textWithSeeAllText
+import com.chirag047.rapidservice.Model.OrderModel
+import com.chirag047.rapidservice.R
+import com.chirag047.rapidservice.ViewModel.TrackScreenViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun TrackScreen(navController: NavController) {
+fun TrackScreen(navController: NavController, sharedPreferences: SharedPreferences) {
     Box(Modifier.fillMaxSize()) {
+
+        val scope = rememberCoroutineScope()
+        val trackScreenViewModel: TrackScreenViewModel = hiltViewModel()
+
+        val liveOrdersList = remember {
+            mutableStateOf(mutableListOf(OrderModel()))
+        }
+
+        val doneOrdersList = remember {
+            mutableStateOf(mutableListOf(OrderModel()))
+        }
+
         Column(Modifier.fillMaxWidth()) {
             poppinsBoldCenterText(
                 contentText = "Track",
@@ -63,40 +89,241 @@ fun TrackScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(15.dp, 5.dp, 15.dp, 0.dp)
                 )
-                
+
                 Spacer(modifier = Modifier.padding(2.dp))
 
-                TrackSingle("Ashish Kharvar", "Mahindra Thar | Diesel") {
-                    navController.navigate("TrackNowScreen")
+                val corporateId = sharedPreferences.getString("corporateId", "")!!
+
+                LaunchedEffect(key1 = Unit) {
+                    scope.launch(Dispatchers.Main) {
+                        trackScreenViewModel.getMyOrdersRequest(corporateId, "Live").collect {
+                            when (it) {
+                                is ResponseType.Error -> {
+
+                                }
+
+                                is ResponseType.Loading -> {
+
+                                }
+
+                                is ResponseType.Success -> {
+                                    val list = mutableListOf(OrderModel())
+                                    list.clear()
+                                    list.addAll(it.data!!)
+                                    liveOrdersList.value = list
+
+                                }
+                            }
+                        }
+                    }
                 }
+
+                NoDataText("No Live request", liveOrdersList.value.size.equals(0))
+                loadLiveRequests(liveOrdersList.value, navController)
 
                 Spacer(modifier = Modifier.padding(6.dp))
 
-                textWithSeeAllText(title = "Service History") {
-                    navController.navigate("ServiceHistoryScreen")
-                }
+                poppinsBoldText(
+                    contentText = "Service History",
+                    size = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp, 5.dp, 15.dp, 0.dp)
+                )
 
                 Spacer(modifier = Modifier.padding(6.dp))
-                TrackHistorySingle(
-                    "Mukesh patel", "Auto Rickshaw | CNG",
-                    "Mon 9 Feb 2024 | 11.47 AM"
-                )
-                TrackHistorySingle(
-                    "Ramesh Sutariya",
-                    "Yamaha Duke | Petrol ",
-                    "Wed 15 Jan 2024 | 01.35 PM"
-                )
-                TrackHistorySingle(
-                    "Ankit Kharawar",
-                    "TATA Aviniya | Battery",
-                    "Tue 30 Nov 2023 | 6.50 PM"
-                )
-                TrackHistorySingle(
-                    "Ashish Kharawar", "Mahindra Thar | Diesel",
-                    "Sun 6 Aug 2023 | 07.30 PM"
-                )
+
+                LaunchedEffect(key1 = Unit) {
+                    scope.launch(Dispatchers.Main) {
+                        trackScreenViewModel.getMyOrdersRequest(corporateId, "Done").collect {
+                            when (it) {
+                                is ResponseType.Error -> {
+
+                                }
+
+                                is ResponseType.Loading -> {
+
+                                }
+
+                                is ResponseType.Success -> {
+                                    val list = mutableListOf(OrderModel())
+                                    list.clear()
+                                    list.addAll(it.data!!)
+                                    doneOrdersList.value = list
+
+                                }
+                            }
+                        }
+                    }
+                }
+
+                NoDataText("No history", doneOrdersList.value.size.equals(0))
+                loadDoneRequests(doneOrdersList.value, navController)
+
             }
 
         }
+    }
+}
+
+@Composable
+fun TrackSingle(title: String, desc: String, onclick: () -> Unit) {
+    Row(
+        Modifier
+            .padding(15.dp, 7.dp)
+            .clip(RoundedCornerShape(25.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .clickable {
+
+            }
+    ) {
+
+        Column(
+            Modifier
+                .padding(15.dp, 0.dp, 7.dp, 0.dp)
+                .clip(RoundedCornerShape(10.dp))
+
+        ) {
+            Spacer(modifier = Modifier.padding(10.dp))
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(5.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(MaterialTheme.colorScheme.secondary),
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.live),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(10.dp)
+                )
+            }
+            //Spacer(modifier = Modifier.padding(10.dp))
+        }
+
+        Column(Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.padding(10.dp))
+
+            poppinsBoldText(
+                contentText = title,
+                size = 14.sp,
+                modifier = Modifier
+                    .padding(10.dp, 0.dp)
+            )
+
+            poppinsText(
+                contentText = desc,
+                size = 12.sp,
+                modifier = Modifier
+                    .padding(10.dp, 0.dp)
+            )
+
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Button(
+                    onClick = {
+                        onclick.invoke()
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier
+                        .padding(15.dp, 10.dp)
+                ) {
+                    Text(
+                        text = "Track now",
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily(Font(R.font.poppins_medium))
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun TrackHistorySingle(title: String, desc: String) {
+    Row(
+        Modifier
+            .padding(15.dp, 7.dp)
+            .clip(RoundedCornerShape(25.dp))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .clickable {
+
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Column(
+            Modifier
+                .padding(15.dp, 0.dp, 7.dp, 0.dp)
+                .clip(RoundedCornerShape(10.dp))
+
+        ) {
+            Spacer(modifier = Modifier.padding(10.dp))
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(5.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(MaterialTheme.colorScheme.secondary),
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.history),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(10.dp)
+                )
+            }
+            Spacer(modifier = Modifier.padding(10.dp))
+        }
+
+        Column(Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.padding(10.dp))
+
+            poppinsBoldText(
+                contentText = title,
+                size = 14.sp,
+                modifier = Modifier
+                    .padding(10.dp, 0.dp)
+            )
+
+            poppinsText(
+                contentText = desc,
+                size = 12.sp,
+                modifier = Modifier
+                    .padding(10.dp, 0.dp)
+            )
+
+            Spacer(modifier = Modifier.padding(10.dp))
+
+        }
+
+    }
+}
+
+@Composable
+fun loadLiveRequests(list: List<OrderModel>, navController: NavController) {
+    list.forEach {
+        TrackSingle(
+            it.vehicleOwner,
+            it.vehicleCompany + " " + it.vehicleModel + " | " + it.vehicleFuelType
+        ) {
+            navController.navigate("TrackNowScreen")
+        }
+    }
+}
+
+@Composable
+fun loadDoneRequests(list: List<OrderModel>, navController: NavController) {
+    list.forEach {
+
+        TrackHistorySingle(
+            it.corporateName,
+            it.vehicleCompany + " " + it.vehicleModel + " | " + it.vehicleFuelType
+        )
     }
 }

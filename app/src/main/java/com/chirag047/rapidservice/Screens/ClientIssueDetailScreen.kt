@@ -260,7 +260,7 @@ fun ClientIssueDetailScreen(
                             .background(MaterialTheme.colorScheme.primary)
                             .weight(1f)
                             .clickable {
-                                navController.navigate("SelectMechanicForService")
+                                navController.navigate("SelectMechanicForService"+ "/$orderId")
                             }
                     ) {
                         Text(

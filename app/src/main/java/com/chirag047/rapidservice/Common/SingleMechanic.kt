@@ -21,10 +21,12 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.chirag047.rapidservice.Model.MechanicModel
 import com.chirag047.rapidservice.R
 
 @Composable
-fun SingleMechanic(name: String, status: String) {
+fun SingleMechanic(mechanicModel: MechanicModel, navController: NavController) {
     Row(
         Modifier
             .padding(15.dp, 7.dp)
@@ -64,18 +66,18 @@ fun SingleMechanic(name: String, status: String) {
         Column(Modifier.weight(1f)) {
 
             poppinsBoldText(
-                contentText = name,
+                contentText = mechanicModel.userName,
                 size = 14.sp,
                 modifier = Modifier
                     .padding(10.dp, 0.dp)
             )
 
             Text(
-                text = "• " + status,
+                text = "• " + mechanicModel.mechanicStatus,
                 fontFamily = FontFamily(Font(R.font.poppins_medium)),
                 fontSize = 12.sp,
-                color = if (status.equals("Available")) MaterialTheme.colorScheme.primary else if (status.equals(
-                        "Currently on service"
+                color = if (mechanicModel.mechanicStatus.equals("Available")) MaterialTheme.colorScheme.primary else if (mechanicModel.mechanicStatus.equals(
+                        "On service"
                     )
                 ) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.error,
                 modifier = Modifier

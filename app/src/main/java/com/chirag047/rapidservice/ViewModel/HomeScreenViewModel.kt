@@ -11,4 +11,8 @@ class HomeScreenViewModel @Inject constructor(val dataRepository: DataRepository
     suspend fun getPendingOrderRequests(centerId: String) =
         dataRepository.getPendingOrderRequests(centerId)
 
+    suspend fun getMyAllMechanics(
+        centerId: String
+    ) = dataRepository.getMyAllMechanics(centerId)
+
 }

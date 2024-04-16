@@ -56,8 +56,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SelectMechanicForService(
-
-    navController: NavController, sharedPreferences: SharedPreferences
+    navController: NavController, sharedPreferences: SharedPreferences, orderId: String
 ) {
 
     val scope = rememberCoroutineScope()
@@ -143,7 +142,7 @@ fun SelectMechanicForService(
                         .padding(0.dp, 15.dp, 0.dp, 40.dp)
                 ) {
                     FullWidthButton(
-                        label = "Continue",
+                        label = "Submit to mechanic",
                         color = MaterialTheme.colorScheme.primary
                     ) {
                         if (selectedIndex.value.equals(-1)) {
@@ -152,7 +151,32 @@ fun SelectMechanicForService(
                             return@FullWidthButton
                         }
 
-                        val selectedVehicle = mechanicList.get(selectedIndex.value)
+                        val selectedMechanic = mechanicList.get(selectedIndex.value)
+
+                        scope.launch(Dispatchers.Main) {
+                            selectMechanicScreenViewModel.submitOrderToMechanic(
+                                orderId,
+                                selectedMechanic.mechanicId
+                            ).collect {
+                                when (it) {
+                                    is ResponseType.Error -> {
+                                        showProgressBar.value = false
+                                        snackBarMsg.value = it.errorMsg.toString()
+                                        openMySnackbar.value = true
+                                    }
+
+                                    is ResponseType.Loading -> {
+                                        showProgressBar.value = true
+                                    }
+
+                                    is ResponseType.Success -> {
+                                        showProgressBar.value = false
+                                        snackBarMsg.value = it.data!!
+                                        openMySnackbar.value = true
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -237,7 +261,7 @@ fun SelectMechanicForServiceFromList(mechanicList: List<MechanicModel>): Int {
                         fontFamily = FontFamily(Font(R.font.poppins_medium)),
                         fontSize = 12.sp,
                         color = if (mechanic.mechanicStatus.equals("Available")) MaterialTheme.colorScheme.primary else if (mechanic.mechanicStatus.equals(
-                                "Currently on service"
+                                "On service"
                             )
                         ) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.error,
                         modifier = Modifier
@@ -253,10 +277,7 @@ fun SelectMechanicForServiceFromList(mechanicList: List<MechanicModel>): Int {
                         .size(40.dp)
                         .padding(8.dp)
                 )
-
-
                 Spacer(modifier = Modifier.padding(5.dp))
-
             }
         }
     }

@@ -29,15 +29,6 @@ fun MechanicListScreen(navController: NavController){
             )
         }
         Column(Modifier.fillMaxWidth().verticalScroll(scroll)) {
-            SingleMechanic("Apurva Gandhi", "Available")
-            SingleMechanic("Chintan Gajjar", "Currently on service")
-            SingleMechanic("Papesh Padhare", "Available")
-            SingleMechanic("Jaydip Singh", "Available")
-            SingleMechanic("Tushar Gohil", "Available")
-            SingleMechanic("Mukesh Patel", "Not available")
-            SingleMechanic("Ankit Patel", "Available")
-            SingleMechanic("Ashish Kharawar", "Currently on service")
-            SingleMechanic("Papesh Padhare", "Not available")
 
         }
     }

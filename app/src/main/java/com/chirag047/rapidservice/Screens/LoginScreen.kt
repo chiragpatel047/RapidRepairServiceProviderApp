@@ -241,7 +241,6 @@ fun LoginScreen(navController: NavController,sharedPreferences: SharedPreference
                                                 sharedPreferences.edit().putString("corporateTime",it.data!!.centerTime).apply()
                                                 sharedPreferences.edit().putString("corporateId",it.data!!.centerId).apply()
 
-
                                                 navController.navigate("MainScreen")
                                             }
                                         }

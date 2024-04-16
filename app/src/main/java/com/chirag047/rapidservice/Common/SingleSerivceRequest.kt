@@ -138,12 +138,14 @@ fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
                 }
                 Spacer(modifier = Modifier.padding(2.dp))
                 Row(
-                    modifier = Modifier.border(
-                        1.dp, MaterialTheme.colorScheme.primary,
-                        RoundedCornerShape(25.dp)
-                    ).clickable {
-                        navController.navigate("SelectMechanicForService")
-                    }
+                    modifier = Modifier
+                        .border(
+                            1.dp, MaterialTheme.colorScheme.primary,
+                            RoundedCornerShape(25.dp)
+                        )
+                        .clickable {
+                            navController.navigate("SelectMechanicForService" + "/${orderModel.orderId}")
+                        }
                 ) {
                     Text(
                         text = "Accept",

@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.GrayFilledSimpleButton
+import com.chirag047.rapidservice.Common.NoDataText
 import com.chirag047.rapidservice.Common.ResponseType
 import com.chirag047.rapidservice.Common.SingleDoneService
 import com.chirag047.rapidservice.Common.SingleMechanic
@@ -45,6 +46,7 @@ import com.chirag047.rapidservice.Common.SingleSerivceRequest
 import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Common.poppinsBoldText
 import com.chirag047.rapidservice.Common.textWithSeeAllText
+import com.chirag047.rapidservice.Model.MechanicModel
 import com.chirag047.rapidservice.Model.OrderModel
 import com.chirag047.rapidservice.R
 import com.chirag047.rapidservice.ViewModel.HomeScreenViewModel
@@ -62,6 +64,9 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
 
         val pendingOrdersList = remember {
             mutableStateOf(mutableListOf(OrderModel()))
+        }
+        val mechanicList = remember {
+            mutableStateOf(mutableListOf(MechanicModel()))
         }
 
         Column(
@@ -235,21 +240,51 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
             }
 
             loadPendingRequests(pendingOrdersList.value, navController)
+            NoDataText(
+                text = "No pending requests",
+                isVisible = pendingOrdersList.value.size.equals(0)
+            )
 
             textWithSeeAllText(title = "Your Mechanic list") {
                 navController.navigate("MechanicListScreen")
             }
 
-            SingleMechanic("Apurva Gandhi", "Available")
-            SingleMechanic("Chintan Gajjar", "Currently on service")
-            SingleMechanic("Papesh Padhare", "Not available")
+            LaunchedEffect(key1 = Unit) {
+                scope.launch(Dispatchers.Main) {
 
-            //SingleDoneService(R.drawable.car_icon,"Ashish Kharawar","Mahindra Thar | Diesel")
-            //SingleDoneService(R.drawable.motorcycle_icon,"Ankit Kharawar","Hero Splender | Petrol")
-            //SingleDoneService(R.drawable.rickshaw_icon,"Mukesh patel","Auto Rickshaw | CNG")
+                    val corporateId = sharedPreferences.getString("corporateId", "")!!
 
+                    Log.d("corporateId", corporateId)
+
+                    homeScreenViewModel.getMyAllMechanics(corporateId).collect {
+                        when (it) {
+                            is ResponseType.Error -> {
+
+                            }
+
+                            is ResponseType.Loading -> {
+
+                            }
+
+                            is ResponseType.Success -> {
+
+                                val list = mutableListOf(MechanicModel())
+                                list.clear()
+                                list.addAll(it.data!!)
+                                mechanicList.value = list
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            loadMechanicList(mechanicList.value, navController)
+            NoDataText(
+                text = "You haven't added any mechanic",
+                isVisible = mechanicList.value.size.equals(0)
+            )
         }
-
     }
 }
 
@@ -261,6 +296,17 @@ fun loadPendingRequests(list: List<OrderModel>, navController: NavController) {
             it,
             navController
         )
+
+    }
+
+}
+
+@Composable
+fun loadMechanicList(list: List<MechanicModel>, navController: NavController) {
+
+    list.forEach {
+
+        SingleMechanic(it, navController)
 
     }
 
