@@ -63,10 +63,17 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
         val scope = rememberCoroutineScope()
 
         val pendingOrdersList = remember {
-            mutableStateOf(mutableListOf(OrderModel()))
+            mutableListOf<OrderModel>()
         }
         val mechanicList = remember {
-            mutableStateOf(mutableListOf(MechanicModel()))
+            mutableListOf<MechanicModel>()
+        }
+
+        val pendingStatus = remember {
+            mutableStateOf("Loading...")
+        }
+        val mechanicStatus = remember {
+            mutableStateOf("Loading...")
         }
 
         Column(
@@ -227,22 +234,19 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
 
                             is ResponseType.Success -> {
 
-                                val list = mutableListOf(OrderModel())
-                                list.clear()
-                                list.addAll(it.data!!)
-                                Log.d("corporateId", (it.data!!.toString()))
-                                pendingOrdersList.value = list
-
+                                pendingOrdersList.clear()
+                                pendingOrdersList.addAll(it.data!!)
+                                pendingStatus.value = "No pending requests"
                             }
                         }
                     }
                 }
             }
 
-            loadPendingRequests(pendingOrdersList.value, navController)
+            loadPendingRequests(pendingOrdersList, navController)
             NoDataText(
-                text = "No pending requests",
-                isVisible = pendingOrdersList.value.size.equals(0)
+                text = pendingStatus.value,
+                isVisible = pendingOrdersList.size.equals(0)
             )
 
             textWithSeeAllText(title = "Your Mechanic list") {
@@ -268,21 +272,19 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
 
                             is ResponseType.Success -> {
 
-                                val list = mutableListOf(MechanicModel())
-                                list.clear()
-                                list.addAll(it.data!!)
-                                mechanicList.value = list
-
+                                mechanicList.clear()
+                                mechanicList.addAll(it.data!!)
+                                mechanicStatus.value = "You haven't added any mechanic"
                             }
                         }
                     }
                 }
             }
 
-            loadMechanicList(mechanicList.value, navController)
+            loadMechanicList(mechanicList, navController)
             NoDataText(
-                text = "You haven't added any mechanic",
-                isVisible = mechanicList.value.size.equals(0)
+                text = mechanicStatus.value,
+                isVisible = mechanicList.size.equals(0)
             )
         }
     }

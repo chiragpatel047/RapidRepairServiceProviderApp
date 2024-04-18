@@ -32,6 +32,7 @@ import com.chirag047.rapidservice.Screens.SelectMechanicForService
 import com.chirag047.rapidservice.Screens.ServiceHistoryScreen
 import com.chirag047.rapidservice.Screens.ServiceRequestListScreen
 import com.chirag047.rapidservice.Screens.SignUpScreen
+import com.chirag047.rapidservice.Screens.TrackNowScreen
 import com.chirag047.rapidservice.Screens.WelcomeScreen
 import com.chirag047.rapidservice.ui.theme.RapidServiceTheme
 import com.google.firebase.auth.ktx.auth
@@ -57,13 +58,13 @@ class MainActivity : ComponentActivity() {
 
                     if (auth.currentUser != null) {
                         if (isFilled) {
-                            App("MainScreen", sharedPreferences)
+                            App("MainScreen", sharedPreferences, this)
 
                         } else {
-                            App("EnterDetailsScreenOne", sharedPreferences)
+                            App("EnterDetailsScreenOne", sharedPreferences, this)
                         }
                     } else {
-                        App("WelcomeScreen", sharedPreferences)
+                        App("WelcomeScreen", sharedPreferences, this)
                     }
                 }
             }
@@ -73,7 +74,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun App(startScreen: String, sharedPreferences: SharedPreferences) {
+fun App(startScreen: String, sharedPreferences: SharedPreferences, context: Context) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = startScreen) {
@@ -190,7 +191,24 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences) {
         composable(route = "SelectMechanicForService" + "/{orderId}") {
             val orderId = it.arguments?.getString("orderId")!!
 
-            SelectMechanicForService(navController, sharedPreferences,orderId)
+            SelectMechanicForService(navController, sharedPreferences, orderId)
         }
+
+
+        composable(route = "TrackNowScreen" + "/{orderId}/{clientAddress}/{clientLatitude}/{clientLongitude}") {
+
+            val orderId = it.arguments?.getString("orderId")!!
+            val clientAddress = it.arguments?.getString("clientAddress")!!
+            val clientLatitude = it.arguments?.getString("clientLatitude")!!
+            val clientLongitude = it.arguments?.getString("clientLongitude")!!
+
+            TrackNowScreen(
+                navController, orderId, clientAddress,
+                clientLatitude,
+                clientLongitude,
+                context
+            )
+        }
+
     }
 }

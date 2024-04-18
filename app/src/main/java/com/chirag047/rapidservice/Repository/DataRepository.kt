@@ -3,6 +3,7 @@ package com.chirag047.rapidservice.Repository
 import android.util.Log
 import com.chirag047.rapidservice.Common.ResponseType
 import com.chirag047.rapidservice.Model.CenterModel
+import com.chirag047.rapidservice.Model.Coordinates
 import com.chirag047.rapidservice.Model.MechanicModel
 import com.chirag047.rapidservice.Model.OrderModel
 import com.google.firebase.auth.FirebaseAuth
@@ -172,7 +173,10 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val a
             }
         }
 
-    suspend fun getMyOrdersRequest(corporateId: String,requestType : String): Flow<ResponseType<List<OrderModel>>> =
+    suspend fun getMyOrdersRequest(
+        corporateId: String,
+        requestType: String
+    ): Flow<ResponseType<List<OrderModel>>> =
         callbackFlow {
 
             trySend(ResponseType.Loading())
@@ -189,4 +193,20 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val a
             }
         }
 
+
+    suspend fun trackLiveLocation(orderId: String): Flow<ResponseType<Coordinates?>> =
+        callbackFlow {
+
+            trySend(ResponseType.Loading())
+
+            firestore.collection("liveTrack")
+                .document(orderId)
+                .addSnapshotListener { value, error ->
+                    trySend(ResponseType.Success(value!!.toObject(Coordinates::class.java))!!)
+                }
+
+            awaitClose {
+                close()
+            }
+        }
 }

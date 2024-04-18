@@ -19,7 +19,8 @@ import com.chirag047.rapidservice.R
 
 @Composable
 fun NoDataText(text: String, isVisible: Boolean) {
-    AnimatedVisibility(isVisible) {
+
+    if (isVisible) {
         Column(
             Modifier
                 .fillMaxWidth()
