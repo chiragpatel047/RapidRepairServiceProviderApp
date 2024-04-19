@@ -1,6 +1,5 @@
 package com.chirag047.rapidservice.Screens
 
-
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -72,6 +71,18 @@ fun TrackNowScreen(
 
     val trackNowScreenViewModel: TrackNowScreenViewModel = hiltViewModel()
 
+
+    val markerState =
+        remember {
+            mutableStateOf(
+                MarkerState(
+                    position = LatLng(
+                        0.0, 0.0
+                    )
+                )
+            )
+        }
+
     LaunchedEffect(key1 = Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             trackNowScreenViewModel.trackLiveLocation(orderId)
@@ -80,7 +91,6 @@ fun TrackNowScreen(
 
     val result = trackNowScreenViewModel.liveData.collectAsState()
     val doneResult = trackNowScreenViewModel.doneData.collectAsState()
-
 
     val showProgressBar = remember {
         mutableStateOf(false)
@@ -114,17 +124,8 @@ fun TrackNowScreen(
 
                 is ResponseType.Success -> {
 
-                    val markerState =
-                        remember {
-                            mutableStateOf(
-                                MarkerState(
-                                    position = LatLng(
-                                        result.value.data!!.lat,
-                                        result.value.data!!.long
-                                    )
-                                )
-                            )
-                        }
+                    markerState.value.position =
+                        LatLng(result.value.data!!.lat, result.value.data!!.long)
 
                     val cameraPositionState = rememberCameraPositionState {
                         position = CameraPosition.fromLatLngZoom(markerState.value.position, 12f)
