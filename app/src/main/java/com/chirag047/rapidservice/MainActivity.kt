@@ -113,10 +113,10 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences, context: Cont
             MainScreen(navController, sharedPreferences)
         }
         composable(route = "ServiceRequestListScreen") {
-            ServiceRequestListScreen(navController)
+            ServiceRequestListScreen(navController,sharedPreferences)
         }
         composable(route = "MechanicListScreen") {
-            MechanicListScreen(navController)
+            MechanicListScreen(navController,sharedPreferences)
         }
         composable(route = "ServiceHistoryScreen") {
             ServiceHistoryScreen(navController)

@@ -51,6 +51,28 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val a
             }
         }
 
+    suspend fun updateCenterStatus(
+        centerId: String,
+        centerStatus: String
+    ): Flow<ResponseType<String>> =
+        callbackFlow {
+            trySend(ResponseType.Loading())
+
+            firestore.collection("centers")
+                .document(centerId)
+                .update("centerStatus", centerStatus).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(ResponseType.Success("Status updated"))
+                    } else {
+                        trySend(ResponseType.Error("Something went wrong"))
+                    }
+                }
+
+            awaitClose {
+                close()
+            }
+        }
+
     suspend fun getPendingOrderRequests(centerId: String): Flow<ResponseType<List<OrderModel>>> =
         callbackFlow {
 

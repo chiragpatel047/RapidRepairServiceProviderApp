@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -76,6 +77,25 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
             mutableStateOf("Loading...")
         }
 
+        val centerName = remember {
+            mutableStateOf("...")
+        }
+        val centerAddress = remember {
+            mutableStateOf("...")
+        }
+
+        val centerTime = remember {
+            mutableStateOf("...")
+        }
+
+        val centerStatus = remember {
+            mutableStateOf("...")
+        }
+
+        val pendingListState = homeScreenViewModel.pendingList.collectAsState()
+        val mechanicListState = homeScreenViewModel.mechanicList.collectAsState()
+        val centerDetails = homeScreenViewModel.centerDetails.collectAsState()
+
         Column(
             Modifier
                 .fillMaxWidth()
@@ -124,12 +144,36 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                 Modifier
                     .padding(15.dp)
                     .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .background(if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer)
             ) {
+
+                LaunchedEffect(key1 = Unit) {
+                    scope.launch(Dispatchers.IO) {
+                        val corporateId = sharedPreferences.getString("corporateId", "")!!
+                        homeScreenViewModel.getSingleCenterDetails(corporateId)
+                    }
+                }
+
+                when (centerDetails.value) {
+                    is ResponseType.Error -> {
+
+                    }
+
+                    is ResponseType.Loading -> {
+
+                    }
+
+                    is ResponseType.Success -> {
+                        centerName.value = centerDetails.value.data!!.centerName!!
+                        centerAddress.value = centerDetails.value.data!!.centerAddress!!
+                        centerTime.value = centerDetails.value.data!!.centerTime!!
+                        centerStatus.value = centerDetails.value.data!!.centerStatus!!
+                    }
+                }
 
                 Column(Modifier.fillMaxWidth()) {
                     poppinsBoldCenterText(
-                        contentText = sharedPreferences.getString("corporateName", "")!!,
+                        contentText = centerName.value,
                         size = 16.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -157,10 +201,11 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                                     Modifier
                                         .size(30.dp)
                                         .padding(0.dp, 8.dp, 0.dp, 8.dp),
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                                 )
+
                                 Text(
-                                    text = sharedPreferences.getString("corporateAddress", "")!!,
+                                    text = centerAddress.value,
                                     fontSize = 12.sp,
                                     modifier = Modifier
                                         .padding(0.dp, 6.dp, 0.dp, 5.dp),
@@ -177,11 +222,11 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                                     Modifier
                                         .size(30.dp)
                                         .padding(0.dp, 8.dp, 0.dp, 8.dp),
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                                 )
 
                                 Text(
-                                    text = sharedPreferences.getString("corporateTime", "")!!,
+                                    text = centerTime.value,
                                     fontSize = 12.sp,
                                     modifier = Modifier
                                         .padding(0.dp, 6.dp, 0.dp, 5.dp),
@@ -195,14 +240,33 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
 
                         Button(
                             onClick = {
+                                val corporateId =
+                                    sharedPreferences.getString("corporateId", "")!!
+                                if (centerStatus.value.equals("Available")) {
 
+                                    scope.launch(Dispatchers.IO) {
+
+                                        homeScreenViewModel.updateCenterStatus(
+                                            corporateId,
+                                            "Closed"
+                                        )
+                                    }
+                                } else {
+                                    scope.launch(Dispatchers.IO) {
+
+                                        homeScreenViewModel.updateCenterStatus(
+                                            corporateId,
+                                            "Available"
+                                        )
+                                    }
+                                }
                             },
-                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                            colors = ButtonDefaults.buttonColors(if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error),
                             modifier = Modifier
                                 .padding(0.dp, 0.dp, 10.dp, 0.dp)
                         ) {
                             Text(
-                                text = "Available",
+                                text = centerStatus.value,
                                 fontSize = 12.sp,
                                 fontFamily = FontFamily(Font(R.font.poppins_medium)),
                             )
@@ -216,34 +280,30 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
             }
 
             LaunchedEffect(key1 = Unit) {
-                scope.launch(Dispatchers.Main) {
-
+                scope.launch(Dispatchers.IO) {
                     val corporateId = sharedPreferences.getString("corporateId", "")!!
-
-                    Log.d("corporateId", corporateId)
-
-                    homeScreenViewModel.getPendingOrderRequests(corporateId).collect {
-                        when (it) {
-                            is ResponseType.Error -> {
-
-                            }
-
-                            is ResponseType.Loading -> {
-
-                            }
-
-                            is ResponseType.Success -> {
-
-                                pendingOrdersList.clear()
-                                pendingOrdersList.addAll(it.data!!)
-                                pendingStatus.value = "No pending requests"
-                            }
-                        }
-                    }
+                    homeScreenViewModel.getPendingOrderRequests(corporateId)
                 }
             }
 
-            loadPendingRequests(pendingOrdersList, navController)
+            when (pendingListState.value) {
+                is ResponseType.Error -> {
+
+                }
+
+                is ResponseType.Loading -> {
+
+                }
+
+                is ResponseType.Success -> {
+
+                    pendingOrdersList.clear()
+                    pendingOrdersList.addAll(pendingListState.value.data!!)
+                    pendingStatus.value = "No pending requests"
+                }
+            }
+
+            loadPendingRequests(pendingOrdersList.take(3), navController)
             NoDataText(
                 text = pendingStatus.value,
                 isVisible = pendingOrdersList.size.equals(0)
@@ -254,34 +314,30 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
             }
 
             LaunchedEffect(key1 = Unit) {
-                scope.launch(Dispatchers.Main) {
-
+                scope.launch(Dispatchers.IO) {
                     val corporateId = sharedPreferences.getString("corporateId", "")!!
-
-                    Log.d("corporateId", corporateId)
-
-                    homeScreenViewModel.getMyAllMechanics(corporateId).collect {
-                        when (it) {
-                            is ResponseType.Error -> {
-
-                            }
-
-                            is ResponseType.Loading -> {
-
-                            }
-
-                            is ResponseType.Success -> {
-
-                                mechanicList.clear()
-                                mechanicList.addAll(it.data!!)
-                                mechanicStatus.value = "You haven't added any mechanic"
-                            }
-                        }
-                    }
+                    homeScreenViewModel.getMyAllMechanics(corporateId)
                 }
             }
 
-            loadMechanicList(mechanicList, navController)
+            when (mechanicListState.value) {
+                is ResponseType.Error -> {
+
+                }
+
+                is ResponseType.Loading -> {
+
+                }
+
+                is ResponseType.Success -> {
+                    mechanicList.clear()
+                    mechanicList.addAll(mechanicListState.value.data!!)
+                    mechanicStatus.value = "You haven't added any mechanic"
+                }
+            }
+
+            loadMechanicList(mechanicList.take(3), navController)
+
             NoDataText(
                 text = mechanicStatus.value,
                 isVisible = mechanicList.size.equals(0)

@@ -200,6 +200,7 @@ fun ChooseLocationOnMapScreen(
 
                             val centerModel = CenterModel(
                                 System.currentTimeMillis().toString(),
+                                "Available",
                                 corporateName,
                                 corporateAddress,
                                 corporateTime,
@@ -217,10 +218,16 @@ fun ChooseLocationOnMapScreen(
 
                                             showProgressBar.value = false
 
-                                            sharedPreferences.edit().putString("corporateName",corporateName).apply()
-                                            sharedPreferences.edit().putString("corporateAddress",corporateAddress).apply()
-                                            sharedPreferences.edit().putString("corporateTime",corporateTime).apply()
-                                            sharedPreferences.edit().putString("corporateId",centerModel.centerId).apply()
+                                            sharedPreferences.edit()
+                                                .putString("corporateName", corporateName).apply()
+                                            sharedPreferences.edit()
+                                                .putString("corporateAddress", corporateAddress)
+                                                .apply()
+                                            sharedPreferences.edit()
+                                                .putString("corporateTime", corporateTime).apply()
+                                            sharedPreferences.edit()
+                                                .putString("corporateId", centerModel.centerId)
+                                                .apply()
 
                                             navController.popBackStack()
                                             navController.popBackStack()
