@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,13 +33,15 @@ fun ClientLocationScreen(
 ) {
     Box(Modifier.fillMaxSize()) {
 
-        val loadMap = remember {
+
+        val isMapLoaded = remember {
             mutableStateOf(false)
         }
 
+
         LaunchedEffect(key1 = Unit) {
-            delay(500)
-            loadMap.value = true
+            delay(2000)
+            isMapLoaded.value = true
         }
 
         Column(Modifier.fillMaxWidth()) {
@@ -54,28 +58,31 @@ fun ClientLocationScreen(
             val latitude = clientLatitude.toDouble()
             val longitude = clientLongitude.toDouble()
 
-            loadClientLocationOnMap(load = loadMap.value, marker = LatLng(latitude, longitude))
 
-        }
-    }
-}
+            val markerState =
+                remember { mutableStateOf(MarkerState(position = LatLng(latitude, longitude))) }
 
-@Composable
-fun loadClientLocationOnMap(load: Boolean, marker: LatLng) {
-    AnimatedVisibility(visible = load) {
+            val cameraPositionState = rememberCameraPositionState {
+                position = CameraPosition.fromLatLngZoom(markerState.value.position, 12f)
+            }
 
-        val markerState =
-            remember { mutableStateOf(MarkerState(position = marker)) }
+            if (!isMapLoaded.value) {
+                Box(Modifier.fillMaxSize()) {
+                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                }
 
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(markerState.value.position, 12f)
-        }
+            } else {
 
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState
-        ) {
-            Marker(state = markerState.value)
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    onMapLoaded = {
+                        isMapLoaded.value = true
+                    }
+                ) {
+                    Marker(state = markerState.value)
+                }
+            }
         }
     }
 }

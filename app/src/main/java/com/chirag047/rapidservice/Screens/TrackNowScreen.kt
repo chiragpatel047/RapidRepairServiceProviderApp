@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -96,12 +97,15 @@ fun TrackNowScreen(
         mutableStateOf(false)
     }
 
+    val isMapLoaded = remember {
+        mutableStateOf(false)
+    }
+
     var openMySnackbar = remember { mutableStateOf(false) }
     var snackBarMsg = remember { mutableStateOf("") }
 
 
     Box(modifier = Modifier.fillMaxSize()) {
-
 
         Column(
             Modifier
@@ -113,31 +117,33 @@ fun TrackNowScreen(
                 ActionBarWIthBack(title = "Track location")
             }
 
-            when (result.value) {
-                is ResponseType.Error -> {
+            val cameraPositionState = rememberCameraPositionState {
+                position = CameraPosition.fromLatLngZoom(markerState.value.position, 12f)
+            }
 
-                }
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
 
-                is ResponseType.Loading -> {
-
-                }
-
-                is ResponseType.Success -> {
-
-                    markerState.value.position =
-                        LatLng(result.value.data!!.lat, result.value.data!!.long)
-
-                    val cameraPositionState = rememberCameraPositionState {
-                        position = CameraPosition.fromLatLngZoom(markerState.value.position, 12f)
+                if (!isMapLoaded.value) {
+                    Box(Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(Modifier.align(Alignment.Center))
                     }
+
+                } else {
 
                     GoogleMap(
                         modifier = Modifier
                             .fillMaxSize()
                             .weight(1f),
                         cameraPositionState = cameraPositionState,
+                        onMapLoaded = {
+                            isMapLoaded.value = true
+                        }
 
-                        ) {
+                    ) {
                         val zoomForFirstTime = remember {
                             mutableStateOf(true)
                         }
@@ -173,6 +179,27 @@ fun TrackNowScreen(
                 }
             }
 
+
+
+            when (result.value) {
+                is ResponseType.Error -> {
+
+                }
+
+                is ResponseType.Loading -> {
+
+                }
+
+                is ResponseType.Success -> {
+
+                    markerState.value.position =
+                        LatLng(result.value.data!!.lat, result.value.data!!.long)
+
+                    isMapLoaded.value = true
+
+
+                }
+            }
 
             Column(
                 Modifier
