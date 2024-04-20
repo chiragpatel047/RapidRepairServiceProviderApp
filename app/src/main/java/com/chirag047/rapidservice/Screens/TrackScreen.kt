@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,6 +57,8 @@ fun TrackScreen(navController: NavController, sharedPreferences: SharedPreferenc
 
         val scope = rememberCoroutineScope()
         val trackScreenViewModel: TrackScreenViewModel = hiltViewModel()
+
+        val requestData = trackScreenViewModel.requestsList.collectAsState()
 
         val liveOrdersList = remember {
             mutableListOf<OrderModel>()
@@ -102,24 +105,39 @@ fun TrackScreen(navController: NavController, sharedPreferences: SharedPreferenc
                 val corporateId = sharedPreferences.getString("corporateId", "")!!
 
                 LaunchedEffect(key1 = Unit) {
-                    scope.launch(Dispatchers.Main) {
-                        trackScreenViewModel.getMyOrdersRequest(corporateId, "Live").collect {
-                            when (it) {
-                                is ResponseType.Error -> {
+                    scope.launch(Dispatchers.IO) {
+                        trackScreenViewModel.getMyOrdersRequest(corporateId)
+                    }
+                }
 
-                                }
+                when (requestData.value) {
+                    is ResponseType.Error -> {
 
-                                is ResponseType.Loading -> {
+                    }
 
-                                }
+                    is ResponseType.Loading -> {
 
-                                is ResponseType.Success -> {
-                                    liveOrdersList.clear()
-                                    liveOrdersList.addAll(it.data!!)
-                                    liveOrdersStatus.value = "No live request"
-                                }
+                    }
+
+                    is ResponseType.Success -> {
+                        liveOrdersList.clear()
+                        doneOrdersList.clear()
+
+                        requestData.value.data!!.forEach {
+                            if (it.orderStatus.equals("Live")) {
+                                liveOrdersList.add(it)
                             }
                         }
+
+                        requestData.value.data!!.forEach {
+                            if (it.orderStatus.equals("Done")) {
+                                doneOrdersList.add(it)
+                            }
+                        }
+
+                        liveOrdersStatus.value = "No live request"
+
+                        doneOrdersStatus.value = "No history"
                     }
                 }
 
@@ -137,28 +155,6 @@ fun TrackScreen(navController: NavController, sharedPreferences: SharedPreferenc
                 )
 
                 Spacer(modifier = Modifier.padding(6.dp))
-
-                LaunchedEffect(key1 = Unit) {
-                    scope.launch(Dispatchers.Main) {
-                        trackScreenViewModel.getMyOrdersRequest(corporateId, "Done").collect {
-                            when (it) {
-                                is ResponseType.Error -> {
-
-                                }
-
-                                is ResponseType.Loading -> {
-
-                                }
-
-                                is ResponseType.Success -> {
-                                    doneOrdersList.clear()
-                                    doneOrdersList.addAll(it.data!!)
-                                    doneOrdersStatus.value = "No History"
-                                }
-                            }
-                        }
-                    }
-                }
 
                 NoDataText(doneOrdersStatus.value, doneOrdersList.size.equals(0))
                 loadDoneRequests(doneOrdersList, navController)

@@ -80,6 +80,7 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
         val centerName = remember {
             mutableStateOf("...")
         }
+
         val centerAddress = remember {
             mutableStateOf("...")
         }
@@ -144,7 +145,11 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                 Modifier
                     .padding(15.dp)
                     .clip(RoundedCornerShape(25.dp))
-                    .background(if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer)
+                    .background(
+                        if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primaryContainer
+                        else if (centerStatus.value.equals("Closed")) MaterialTheme.colorScheme.errorContainer
+                        else MaterialTheme.colorScheme.secondaryContainer
+                    )
             ) {
 
                 LaunchedEffect(key1 = Unit) {
@@ -201,7 +206,9 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                                     Modifier
                                         .size(30.dp)
                                         .padding(0.dp, 8.dp, 0.dp, 8.dp),
-                                    tint = if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                                    tint = if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary
+                                    else if (centerStatus.value.equals("Closed")) MaterialTheme.colorScheme.error
+                                    else MaterialTheme.colorScheme.secondary
                                 )
 
                                 Text(
@@ -222,7 +229,10 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                                     Modifier
                                         .size(30.dp)
                                         .padding(0.dp, 8.dp, 0.dp, 8.dp),
-                                    tint = if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                                    tint = if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary
+                                    else if (centerStatus.value.equals("Closed")) MaterialTheme.colorScheme.error
+                                    else MaterialTheme.colorScheme.secondary
+
                                 )
 
                                 Text(
@@ -261,7 +271,12 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                                     }
                                 }
                             },
-                            colors = ButtonDefaults.buttonColors(if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error),
+                            colors = ButtonDefaults.buttonColors(
+                                if (centerStatus.value.equals("Available")) MaterialTheme.colorScheme.primary
+                                else if (centerStatus.value.equals("Closed")) MaterialTheme.colorScheme.error
+                                else MaterialTheme.colorScheme.secondary
+                            ),
+
                             modifier = Modifier
                                 .padding(0.dp, 0.dp, 10.dp, 0.dp)
                         ) {
