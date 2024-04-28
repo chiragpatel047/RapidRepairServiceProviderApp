@@ -14,6 +14,7 @@ data class OrderModel(
     val vehicleFuelType: String = "",
     val vehicleLicensePlate: String = "",
     val serviceType: String = "",
+    val clientProfileImage: String = "",
     val clientAddress: String = "",
     val clientLatitude: String = "",
     val clientLongitude: String = "",

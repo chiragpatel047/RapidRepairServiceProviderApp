@@ -1,6 +1,7 @@
 package com.chirag047.rapidservice.Common
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,31 +32,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.chirag047.rapidservice.Model.OrderModel
 import com.chirag047.rapidservice.R
 
 @Composable
 fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
-
-    var icon = R.drawable.car_icon
-
-    if (orderModel.vehicleType.equals("Car")) {
-        icon = R.drawable.car_icon
-    } else if (orderModel.vehicleType.equals("Motorcycle")) {
-        icon = R.drawable.motorcycle_icon
-    } else if (orderModel.vehicleType.equals("Rickshaw")) {
-        icon = R.drawable.rickshaw_icon
-    } else if (orderModel.vehicleType.equals("Truck")) {
-        icon = R.drawable.truck_icon
-    } else if (orderModel.vehicleType.equals("Bus")) {
-        icon = R.drawable.bus_icon
-    }
 
     Column(
         Modifier
@@ -84,14 +74,26 @@ fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
                         .clip(RoundedCornerShape(50.dp))
                         .background(MaterialTheme.colorScheme.secondary),
                 ) {
-                    Icon(
-                        painterResource(id = icon),
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.onSecondary,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(10.dp)
-                    )
+                    if (orderModel.clientProfileImage.equals("")) {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_filled_icon),
+                            contentDescription = "",
+                            colorFilter = ColorFilter.tint(Color.White),
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .size(50.dp)
+                                .padding(8.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = rememberImagePainter(orderModel.clientProfileImage),
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
+                    }
+
                 }
                 Spacer(modifier = Modifier.padding(4.dp))
             }

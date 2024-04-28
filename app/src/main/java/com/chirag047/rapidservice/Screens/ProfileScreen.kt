@@ -27,6 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -35,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Common.poppinsBoldText
 import com.chirag047.rapidservice.Common.poppinsText
@@ -54,6 +58,8 @@ fun ProfileScreen(navController: NavController, sharedPreferences: SharedPrefere
             )
 
             val scroll = rememberScrollState()
+            val imageUrl = sharedPreferences.getString("profileImage", "")
+
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -68,14 +74,28 @@ fun ProfileScreen(navController: NavController, sharedPreferences: SharedPrefere
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Image(
-                        painter = painterResource(id = R.drawable.profile_image_temp),
-                        contentDescription = "",
-                        Modifier
-                            .size(100.dp)
-                            .clip(RoundedCornerShape(50.dp))
-                    )
+                    if (imageUrl.equals("")) {
+                        Image(
+                            painter = painterResource(R.drawable.profile_filled_icon),
+                            contentDescription = "",
+                            colorFilter = ColorFilter.tint(Color.White),
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(RoundedCornerShape(50.dp))
+                                .background(Color.Gray)
+                                .padding(10.dp)
+                        )
+                    } else {
+                        Image(
+                            painter = rememberImagePainter(imageUrl),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(RoundedCornerShape(50.dp))
+                        )
 
+                    }
                     Spacer(modifier = Modifier.padding(4.dp))
 
                     Column() {

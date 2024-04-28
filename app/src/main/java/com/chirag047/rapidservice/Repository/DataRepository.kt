@@ -1,19 +1,32 @@
 package com.chirag047.rapidservice.Repository
 
+import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
+import com.chirag047.rapidservice.Api.NotificationApi
 import com.chirag047.rapidservice.Common.ResponseType
 import com.chirag047.rapidservice.Model.CenterModel
 import com.chirag047.rapidservice.Model.Coordinates
+import com.chirag047.rapidservice.Model.FirebaseNotificationModel
 import com.chirag047.rapidservice.Model.MechanicModel
 import com.chirag047.rapidservice.Model.OrderModel
+import com.chirag047.rapidservice.Model.PushNotification
+import com.chirag047.rapidservice.Model.UserModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val auth: FirebaseAuth) {
+class DataRepository @Inject constructor(
+    val firestore: FirebaseFirestore,
+    val auth: FirebaseAuth,
+    val storage: FirebaseStorage
+) {
 
     suspend fun createNewCenter(centerModel: CenterModel): Flow<ResponseType<String>> =
         callbackFlow {
@@ -229,4 +242,56 @@ class DataRepository @Inject constructor(val firestore: FirebaseFirestore, val a
                 close()
             }
         }
+
+    suspend fun getUserDetails(): Flow<ResponseType<UserModel?>> = callbackFlow {
+        trySend(ResponseType.Loading())
+
+        firestore.collection("serviceUsers").document(auth.currentUser!!.uid)
+            .addSnapshotListener { value, error ->
+                trySend(ResponseType.Success(value!!.toObject(UserModel::class.java)))
+            }
+        awaitClose {
+            close()
+        }
+    }
+
+    suspend fun updateUserProfilePictureAndPhone(
+        userImage: String, userName: String, phoneNo: String, sharedPreferences: SharedPreferences
+    ): Flow<ResponseType<String>> = callbackFlow {
+        trySend(ResponseType.Loading())
+
+        if (!userImage.equals("")) {
+
+            val ref = storage.reference.child("serviceUsers").child("userProfilePhotos")
+                .child(System.currentTimeMillis().toString())
+
+            ref.putFile(Uri.parse(userImage)).addOnSuccessListener {
+                ref.downloadUrl.addOnSuccessListener {
+                    sharedPreferences.edit().putString("profileImage", it.toString()).apply()
+
+                    firestore.collection("serviceUsers").document(auth.currentUser!!.uid)
+                        .update("userImage", it, "userName", userName, "phoneNo", phoneNo)
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                trySend(ResponseType.Success("Updated successfully"))
+                                Log.d("profileUpdatedLogSuccess", "updated")
+                            }
+                        }
+                }
+            }
+        } else {
+
+            firestore.collection("serviceUsers").document(auth.currentUser!!.uid)
+                .update("userName", userName, "phoneNo", phoneNo).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(ResponseType.Success("Updated successfully"))
+                        Log.d("profileUpdatedLogSuccess", "updated")
+                    }
+                }
+        }
+        awaitClose {
+            close()
+        }
+    }
+
 }

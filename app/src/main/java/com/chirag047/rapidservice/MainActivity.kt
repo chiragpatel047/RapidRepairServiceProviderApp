@@ -125,7 +125,7 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences, context: Cont
             AddNewMechanicScreen(navController, sharedPreferences)
         }
         composable(route = "EditProfile") {
-            EditProfile(navController)
+            EditProfile(navController,sharedPreferences)
         }
         composable(route = "NotificationScreen") {
             NotificationScreen(navController)
