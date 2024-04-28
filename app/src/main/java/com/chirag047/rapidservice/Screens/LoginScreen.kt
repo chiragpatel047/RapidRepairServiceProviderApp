@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController,sharedPreferences: SharedPreferences) {
+fun LoginScreen(navController: NavController, sharedPreferences: SharedPreferences) {
 
     val loginViewModel: LoginViewModel = hiltViewModel()
 
@@ -212,8 +212,13 @@ fun LoginScreen(navController: NavController,sharedPreferences: SharedPreference
                         when (it) {
                             is ResponseType.Success -> {
 
-                                sharedPreferences.edit().putString("userName",it.data!!.userName).apply()
-                                sharedPreferences.edit().putString("userEmail",it.data!!.email).apply()
+                                sharedPreferences.edit().putString("userName", it.data!!.userName)
+                                    .apply()
+                                sharedPreferences.edit().putString("userEmail", it.data!!.email)
+                                    .apply()
+
+                                sharedPreferences.edit()
+                                    .putString("profileImage", it.data!!.userImage).apply()
 
                                 navController.popBackStack()
                                 navController.popBackStack()
@@ -223,28 +228,44 @@ fun LoginScreen(navController: NavController,sharedPreferences: SharedPreference
 
                                     navController.navigate("EnterDetailsScreenOne")
                                 } else {
-                                    loginViewModel.getSingleCenterDetails(it.data!!.userCenterId).collect{
-                                        when(it){
-                                            is ResponseType.Error -> {
+                                    loginViewModel.getSingleCenterDetails(it.data!!.userCenterId)
+                                        .collect {
+                                            when (it) {
+                                                is ResponseType.Error -> {
 
-                                            }
-                                            is ResponseType.Loading -> {
+                                                }
 
-                                            }
+                                                is ResponseType.Loading -> {
 
-                                            is ResponseType.Success -> {
+                                                }
 
-                                                showProgressBar.value = false
+                                                is ResponseType.Success -> {
 
-                                                sharedPreferences.edit().putString("corporateName",it.data!!.centerName).apply()
-                                                sharedPreferences.edit().putString("corporateAddress",it.data!!.centerAddress).apply()
-                                                sharedPreferences.edit().putString("corporateTime",it.data!!.centerTime).apply()
-                                                sharedPreferences.edit().putString("corporateId",it.data!!.centerId).apply()
+                                                    showProgressBar.value = false
 
-                                                navController.navigate("MainScreen")
+                                                    sharedPreferences.edit().putString(
+                                                        "corporateName",
+                                                        it.data!!.centerName
+                                                    ).apply()
+                                                    sharedPreferences.edit().putString(
+                                                        "corporateAddress",
+                                                        it.data!!.centerAddress
+                                                    ).apply()
+                                                    sharedPreferences.edit().putString(
+                                                        "corporateTime",
+                                                        it.data!!.centerTime
+                                                    ).apply()
+                                                    sharedPreferences.edit().putString(
+                                                        "corporateId",
+                                                        it.data!!.centerId
+                                                    ).apply()
+
+
+
+                                                    navController.navigate("MainScreen")
+                                                }
                                             }
                                         }
-                                    }
 
                                 }
 

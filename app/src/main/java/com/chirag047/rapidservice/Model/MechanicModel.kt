@@ -7,6 +7,7 @@ data class MechanicModel(
     var centerId: String = "",
     var centerName: String = "",
     var userName: String = "",
+    var userImage: String = "",
     var email: String = "",
     var password: String = "",
     var phoneNo: String = "",

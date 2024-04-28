@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Common
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,12 +17,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.chirag047.rapidservice.Model.MechanicModel
 import com.chirag047.rapidservice.R
 
@@ -50,15 +55,25 @@ fun SingleMechanic(mechanicModel: MechanicModel, navController: NavController) {
                     .clip(RoundedCornerShape(50.dp))
                     .background(MaterialTheme.colorScheme.secondary),
             ) {
-                Icon(
-
-                    painterResource(id = R.drawable.deliveryboy),
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.onSecondary,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .padding(10.dp)
-                )
+                if (mechanicModel.userImage.equals("")) {
+                    Image(
+                        painter = painterResource(id = R.drawable.profile_filled_icon),
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(Color.White),
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(8.dp)
+                    )
+                } else {
+                    Image(
+                        painter = rememberImagePainter(mechanicModel.userImage),
+                        contentDescription = "",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .size(50.dp)
+                    )
+                }
             }
             Spacer(modifier = Modifier.padding(10.dp))
         }

@@ -119,7 +119,7 @@ fun loadMechanics(list: List<MechanicModel>, mechanicScreenViewModel: MechanicSc
     val scope = rememberCoroutineScope()
 
     list.forEach {
-        ManageSingleMechanic(it.userName, it.mechanicStatus) {
+        ManageSingleMechanic(it.userName, it.mechanicStatus, it.userImage) {
             scope.launch(Dispatchers.Main) {
                 mechanicScreenViewModel.deleteMechanic(it.uid).collect {
                     when (it) {
