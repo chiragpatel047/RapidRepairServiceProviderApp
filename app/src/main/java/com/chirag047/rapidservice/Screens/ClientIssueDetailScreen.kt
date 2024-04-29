@@ -17,6 +17,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,11 +33,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.ActionBarWIthBack
+import com.chirag047.rapidservice.Common.ResponseType
+import com.chirag047.rapidservice.Common.SnackbarWithoutScaffold
+import com.chirag047.rapidservice.Common.customProgressBar
 import com.chirag047.rapidservice.Common.poppinsBoldText
 import com.chirag047.rapidservice.Common.poppinsText
 import com.chirag047.rapidservice.R
+import com.chirag047.rapidservice.ViewModel.HomeScreenViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun ClientIssueDetailScreen(
@@ -55,6 +67,21 @@ fun ClientIssueDetailScreen(
     clientAddedText: String
 ) {
     Box(Modifier.fillMaxSize()) {
+
+        val scope = rememberCoroutineScope()
+        val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+
+
+        val declineOrder = homeScreenViewModel.declineOrder.collectAsState()
+
+        val showProgressBar = remember {
+            mutableStateOf(false)
+        }
+
+        var openMySnackbar = remember { mutableStateOf(false) }
+        var snackBarMsg = remember { mutableStateOf("") }
+
+
         val scroll = rememberScrollState()
         Column(Modifier.fillMaxWidth()) {
             ActionBarWIthBack(title = "Client Issue details")
@@ -241,6 +268,30 @@ fun ClientIssueDetailScreen(
                                 RoundedCornerShape(25.dp)
                             )
                             .weight(1f)
+                            .clickable {
+                                scope.launch(Dispatchers.IO) {
+                                    homeScreenViewModel.declineOrder(orderId)
+
+                                    when (declineOrder.value) {
+                                        is ResponseType.Error -> {
+                                            showProgressBar.value = false
+                                            snackBarMsg.value =
+                                                declineOrder.value.errorMsg.toString()
+                                            openMySnackbar.value = true
+                                        }
+
+                                        is ResponseType.Loading -> {
+                                            showProgressBar.value = true
+                                        }
+
+                                        is ResponseType.Success -> {
+                                            showProgressBar.value = false
+                                            snackBarMsg.value = declineOrder.value.data!!
+                                            openMySnackbar.value = true
+                                        }
+                                    }
+                                }
+                            }
                     ) {
                         Text(
                             text = "Decline",
@@ -260,7 +311,7 @@ fun ClientIssueDetailScreen(
                             .background(MaterialTheme.colorScheme.primary)
                             .weight(1f)
                             .clickable {
-                                navController.navigate("SelectMechanicForService"+ "/$orderId")
+                                navController.navigate("SelectMechanicForService" + "/$orderId" + "/$userId")
                             }
                     ) {
                         Text(
@@ -277,7 +328,13 @@ fun ClientIssueDetailScreen(
                 }
             }
         }
+        customProgressBar(show = showProgressBar.value, title = "Wait a moment...")
 
+        SnackbarWithoutScaffold(
+            snackBarMsg.value, openMySnackbar.value, { openMySnackbar.value = it }, Modifier.align(
+                Alignment.BottomCenter
+            )
+        )
 
     }
 }

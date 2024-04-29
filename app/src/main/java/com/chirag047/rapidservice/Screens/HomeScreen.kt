@@ -96,6 +96,7 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
         val pendingListState = homeScreenViewModel.pendingList.collectAsState()
         val mechanicListState = homeScreenViewModel.mechanicList.collectAsState()
         val centerDetails = homeScreenViewModel.centerDetails.collectAsState()
+        val declineOrder = homeScreenViewModel.declineOrder.collectAsState()
 
         Column(
             Modifier
@@ -318,7 +319,7 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                 }
             }
 
-            loadPendingRequests(pendingOrdersList.take(3), navController)
+            loadPendingRequests(pendingOrdersList.take(3), navController, homeScreenViewModel)
             NoDataText(
                 text = pendingStatus.value,
                 isVisible = pendingOrdersList.size.equals(0)
@@ -362,25 +363,34 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
 }
 
 @Composable
-fun loadPendingRequests(list: List<OrderModel>, navController: NavController) {
+fun loadPendingRequests(
+    list: List<OrderModel>,
+    navController: NavController,
+    homeScreenViewModel: HomeScreenViewModel
+) {
 
+    val scope = rememberCoroutineScope()
     list.forEach {
         SingleSerivceRequest(
             it,
-            navController
-        )
+            navController, {
+                scope.launch(Dispatchers.IO) {
+                    homeScreenViewModel.declineOrder(it.orderId)
+                }
+            })
 
     }
 
 }
 
 @Composable
-fun loadMechanicList(list: List<MechanicModel>, navController: NavController) {
+fun loadMechanicList(
+    list: List<MechanicModel>,
+    navController: NavController
+) {
 
     list.forEach {
-
         SingleMechanic(it, navController)
-
     }
 
 }

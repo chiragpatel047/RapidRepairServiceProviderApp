@@ -61,7 +61,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SelectMechanicForService(
-    navController: NavController, sharedPreferences: SharedPreferences, orderId: String
+    navController: NavController,
+    sharedPreferences: SharedPreferences,
+    orderId: String,
+    userId: String
 ) {
 
     val scope = rememberCoroutineScope()
@@ -161,7 +164,8 @@ fun SelectMechanicForService(
                         scope.launch(Dispatchers.Main) {
                             selectMechanicScreenViewModel.submitOrderToMechanic(
                                 orderId,
-                                selectedMechanic.mechanicId
+                                selectedMechanic.mechanicId,
+                                userId
                             ).collect {
                                 when (it) {
                                     is ResponseType.Error -> {

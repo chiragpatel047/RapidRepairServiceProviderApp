@@ -20,6 +20,7 @@ data class OrderModel(
     val clientLongitude: String = "",
     val clientAddedText: String = "",
     val orderStatus: String = "",
+    val orderInfo: String = "",
     val mechanicLiveLatitude: String = "",
     val mechanicLiveLongitude: String = ""
 )

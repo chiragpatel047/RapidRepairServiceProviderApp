@@ -90,7 +90,7 @@ fun ServiceRequestListScreen(navController: NavController, sharedPreferences: Sh
                 }
             }
 
-            loadPendingRequests(pendingOrdersList.take(3), navController)
+            loadPendingRequests(pendingOrdersList.take(3),navController,homeScreenViewModel)
             NoDataText(
                 text = pendingStatus.value,
                 isVisible = pendingOrdersList.size.equals(0)

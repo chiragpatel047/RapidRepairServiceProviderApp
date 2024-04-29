@@ -19,13 +19,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 
 class DataRepository @Inject constructor(
     val firestore: FirebaseFirestore,
     val auth: FirebaseAuth,
-    val storage: FirebaseStorage
+    val storage: FirebaseStorage,
+    val notificationApi: NotificationApi
 ) {
 
     suspend fun createNewCenter(centerModel: CenterModel): Flow<ResponseType<String>> =
@@ -221,7 +225,8 @@ class DataRepository @Inject constructor(
 
     suspend fun submitOrderToMechanic(
         orderId: String,
-        mechanicId: String
+        mechanicId: String,
+        userId: String
     ): Flow<ResponseType<String>> =
         callbackFlow {
 
@@ -229,10 +234,61 @@ class DataRepository @Inject constructor(
 
             firestore.collection("orders")
                 .document(orderId)
-                .update("mechanicId", mechanicId, "orderStatus", "Mechanic Pending")
+                .update(
+                    "mechanicId",
+                    mechanicId,
+                    "orderStatus",
+                    "Mechanic Pending",
+                    "orderInfo",
+                    "Status : Your request is accepted, waiting for mechanic to start service"
+                )
+                .await()
+
+            val notify = withContext(Dispatchers.IO) {
+
+                val notification = PushNotification(
+                    FirebaseNotificationModel(
+                        "Your Request is Accepted",
+                        "You can live track once it is start by our mechanic "
+                    ), "/topics/" + userId
+                )
+
+                try {
+                    val respose = notificationApi.postNotification(notification)
+                    trySend(ResponseType.Success("Submitted successfully"))
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            awaitClose {
+                close()
+            }
+        }
+
+
+    suspend fun declineOrder(
+        orderId: String,
+    ): Flow<ResponseType<String>> =
+        callbackFlow {
+
+            trySend(ResponseType.Loading())
+
+            val sdf = SimpleDateFormat("hh:mm a | dd MMMM yyyy")
+            val currentDate = sdf.format(Date())
+
+            firestore.collection("orders")
+                .document(orderId)
+                .update(
+                    "orderStatus",
+                    "Done",
+                    "orderInfo",
+                    "Declined at : " + currentDate
+                )
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        trySend(ResponseType.Success("Submitted successfully"))
+                        trySend(ResponseType.Success("Order rejected"))
                     } else {
                         trySend(ResponseType.Error("Something went wrong"))
                     }
@@ -242,6 +298,7 @@ class DataRepository @Inject constructor(
                 close()
             }
         }
+
 
     suspend fun getMyOrdersRequest(
         corporateId: String

@@ -36,6 +36,12 @@ class HomeScreenViewModel @Inject constructor(val dataRepository: DataRepository
     val updateStatus: StateFlow<ResponseType<String>>
         get() = _updateStatus
 
+    private val _declineOrder =
+        MutableStateFlow<ResponseType<String>>(ResponseType.Loading())
+    val declineOrder: StateFlow<ResponseType<String>>
+        get() = _declineOrder
+
+
     suspend fun getPendingOrderRequests(centerId: String) {
         viewModelScope.launch {
             dataRepository.getPendingOrderRequests(centerId).collect {
@@ -67,6 +73,14 @@ class HomeScreenViewModel @Inject constructor(val dataRepository: DataRepository
         viewModelScope.launch {
             dataRepository.updateCenterStatus(centerId, centerStatus).collect {
                 _updateStatus.emit(it)
+            }
+        }
+    }
+
+    suspend fun declineOrder(orderId: String) {
+        viewModelScope.launch {
+            dataRepository.declineOrder(orderId).collect {
+                _declineOrder.emit(it)
             }
         }
     }

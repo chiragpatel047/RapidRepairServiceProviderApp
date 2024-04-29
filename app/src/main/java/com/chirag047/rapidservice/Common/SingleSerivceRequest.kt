@@ -45,7 +45,7 @@ import com.chirag047.rapidservice.Model.OrderModel
 import com.chirag047.rapidservice.R
 
 @Composable
-fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
+fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController,decline : ()-> Unit) {
 
     Column(
         Modifier
@@ -128,7 +128,9 @@ fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
                     modifier = Modifier.border(
                         1.dp, MaterialTheme.colorScheme.onBackground,
                         RoundedCornerShape(25.dp)
-                    )
+                    ).clickable {
+                        decline.invoke()
+                    }
                 ) {
                     Text(
                         text = "Decline",
@@ -146,7 +148,7 @@ fun SingleSerivceRequest(orderModel: OrderModel, navController: NavController) {
                             RoundedCornerShape(25.dp)
                         )
                         .clickable {
-                            navController.navigate("SelectMechanicForService" + "/${orderModel.orderId}")
+                            navController.navigate("SelectMechanicForService" + "/${orderModel.orderId}"+ "/${orderModel.userId}")
                         }
                 ) {
                     Text(
