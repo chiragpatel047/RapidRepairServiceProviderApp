@@ -1,6 +1,7 @@
 package com.chirag047.rapidservice.Screens
 
 import android.content.SharedPreferences
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -38,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.chirag047.rapidservice.Common.FullWidthButton
 import com.chirag047.rapidservice.Common.ResponseType
 import com.chirag047.rapidservice.Common.SelectMechanicFromList
@@ -206,8 +211,6 @@ fun SelectMechanicForServiceFromList(mechanicList: List<MechanicModel>): Int {
     ) {
         mechanicList.forEachIndexed { index, mechanic ->
 
-            var icon = R.drawable.deliveryboy
-
             Row(
                 Modifier
                     .padding(15.dp, 7.dp)
@@ -235,14 +238,25 @@ fun SelectMechanicForServiceFromList(mechanicList: List<MechanicModel>): Int {
                             .clip(RoundedCornerShape(50.dp))
                             .background(MaterialTheme.colorScheme.secondary),
                     ) {
-                        Icon(
-                            painterResource(id = icon),
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.onSecondary,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .padding(10.dp)
-                        )
+                        if (mechanic.userImage.equals("")) {
+                            Image(
+                                painter = painterResource(id = R.drawable.profile_filled_icon),
+                                contentDescription = "",
+                                colorFilter = ColorFilter.tint(Color.White),
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(8.dp)
+                            )
+                        } else {
+                            Image(
+                                painter = rememberImagePainter(mechanic.userImage),
+                                contentDescription = "",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.padding(10.dp))
                 }

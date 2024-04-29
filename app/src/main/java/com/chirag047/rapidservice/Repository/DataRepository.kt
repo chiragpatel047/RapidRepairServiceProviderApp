@@ -86,6 +86,41 @@ class DataRepository @Inject constructor(
             }
         }
 
+
+    suspend fun updateCenterDetails(
+        centerId: String,
+        centerName: String,
+        centerAddress: String,
+        centerPhoneNo: String,
+        centerTime: String
+    ): Flow<ResponseType<String>> =
+        callbackFlow {
+            trySend(ResponseType.Loading())
+
+            firestore.collection("centers")
+                .document(centerId)
+                .update(
+                    "centerName",
+                    centerName,
+                    "centerAddress",
+                    centerAddress,
+                    "centerPhoneNo",
+                    centerPhoneNo,
+                    "centerTime",
+                    centerTime
+                ).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(ResponseType.Success("Updated successfully"))
+                    } else {
+                        trySend(ResponseType.Error("Something went wrong"))
+                    }
+                }
+
+            awaitClose {
+                close()
+            }
+        }
+
     suspend fun getPendingOrderRequests(centerId: String): Flow<ResponseType<List<OrderModel>>> =
         callbackFlow {
 

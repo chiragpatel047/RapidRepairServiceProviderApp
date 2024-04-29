@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+import android.content.SharedPreferences
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -20,9 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,20 +37,69 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.ActionBarWIthBack
 import com.chirag047.rapidservice.Common.FullWidthButton
+import com.chirag047.rapidservice.Common.ResponseType
+import com.chirag047.rapidservice.Common.SnackbarWithoutScaffold
+import com.chirag047.rapidservice.Common.customProgressBar
 import com.chirag047.rapidservice.Common.poppinsBoldText
 import com.chirag047.rapidservice.R
+import com.chirag047.rapidservice.ViewModel.ProfileViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditCorporateScreen(navController: NavController) {
+fun EditCorporateScreen(navController: NavController, sharedPreferences: SharedPreferences) {
     Box(Modifier.fillMaxSize()) {
         val scroll = rememberScrollState()
+        val scope = rememberCoroutineScope()
+
+        val profileViewModel: ProfileViewModel = hiltViewModel()
+
+        val showProgressBar = remember {
+            mutableStateOf(false)
+        }
+
+        var openMySnackbar = remember { mutableStateOf(false) }
+        var snackBarMsg = remember { mutableStateOf("") }
+
 
         Column(Modifier.fillMaxWidth()) {
             ActionBarWIthBack(title = "Edit corporate")
+
+            var centerName by remember { mutableStateOf("") }
+            var centerAddress by remember { mutableStateOf("") }
+            var centerPhoneNo by remember { mutableStateOf("") }
+            var centerTime by remember { mutableStateOf("") }
+
+            val centerId = sharedPreferences.getString("corporateId", "")!!
+
+
+            LaunchedEffect(key1 = Unit) {
+                scope.launch(Dispatchers.Main) {
+                    profileViewModel.getSingleCenterDetails(centerId).collect {
+                        when (it) {
+                            is ResponseType.Error -> {
+
+                            }
+
+                            is ResponseType.Loading -> {
+
+                            }
+
+                            is ResponseType.Success -> {
+                                centerName = it.data?.centerName!!
+                                centerAddress = it.data?.centerAddress!!
+                                centerPhoneNo = it.data?.centerPhoneNo!!
+                                centerTime = it.data?.centerTime!!
+                            }
+                        }
+                    }
+                }
+            }
 
             Column(
                 Modifier
@@ -55,7 +107,6 @@ fun EditCorporateScreen(navController: NavController) {
                     .verticalScroll(scroll)
             ) {
 
-                var centerName by remember { mutableStateOf("") }
 
                 poppinsBoldText(
                     contentText = "Name of corporate",
@@ -94,7 +145,6 @@ fun EditCorporateScreen(navController: NavController) {
 
                 )
 
-                var centerAddress by remember { mutableStateOf("") }
 
                 poppinsBoldText(
                     contentText = "Corporate address",
@@ -133,39 +183,6 @@ fun EditCorporateScreen(navController: NavController) {
 
                 )
 
-                var centerLatLong by remember { mutableStateOf("Choose location on map") }
-
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 10.dp)
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(MaterialTheme.colorScheme.secondaryContainer),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = centerLatLong,
-                        fontSize = 12.sp,
-                        fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(20.dp, 20.dp)
-                    )
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.target),
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .size(30.dp)
-                            .padding(5.dp)
-                    )
-                    Spacer(modifier = Modifier.padding(4.dp))
-
-                }
-
-
-                var centerPhoneNo by remember { mutableStateOf("") }
 
                 poppinsBoldText(
                     contentText = "Corporate Phone No.",
@@ -204,7 +221,6 @@ fun EditCorporateScreen(navController: NavController) {
                 )
 
 
-                var centerTime by remember { mutableStateOf("") }
 
                 poppinsBoldText(
                     contentText = "Available timing",
@@ -244,9 +260,66 @@ fun EditCorporateScreen(navController: NavController) {
                 Spacer(modifier = Modifier.padding(10.dp))
                 FullWidthButton(label = "Submit", color = MaterialTheme.colorScheme.primary) {
 
+                    if (centerName.isEmpty()) {
+                        snackBarMsg.value = "Please enter name of corporate"
+                        openMySnackbar.value = true
+                        return@FullWidthButton
+                    }
+
+                    if (centerAddress.isEmpty()) {
+                        snackBarMsg.value = "Please enter address of corporate"
+                        openMySnackbar.value = true
+                        return@FullWidthButton
+                    }
+                    if (centerPhoneNo.isEmpty()) {
+                        snackBarMsg.value = "Please enter phone no of corporate"
+                        openMySnackbar.value = true
+                        return@FullWidthButton
+                    }
+
+                    if (centerTime.isEmpty()) {
+                        snackBarMsg.value = "Please enter timing of corporate"
+                        openMySnackbar.value = true
+                        return@FullWidthButton
+                    }
+
+
+                    scope.launch {
+                        profileViewModel.updateCenterDetails(
+                            centerId,
+                            centerName,
+                            centerAddress,
+                            centerPhoneNo,
+                            centerTime
+                        ).collect {
+                            when (it) {
+                                is ResponseType.Error -> {
+                                    showProgressBar.value = false
+                                    snackBarMsg.value = it.errorMsg.toString()
+                                    openMySnackbar.value = true
+                                }
+
+                                is ResponseType.Loading -> {
+                                    showProgressBar.value = true
+                                }
+
+                                is ResponseType.Success -> {
+                                    showProgressBar.value = false
+                                    snackBarMsg.value = it.data!!
+                                    openMySnackbar.value = true
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
         }
+        customProgressBar(show = showProgressBar.value, title = "Wait a moment...")
+
+        SnackbarWithoutScaffold(
+            snackBarMsg.value, openMySnackbar.value, { openMySnackbar.value = it }, Modifier.align(
+                Alignment.BottomCenter
+            )
+        )
     }
 }

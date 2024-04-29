@@ -101,7 +101,7 @@ fun ProfileScreen(navController: NavController, sharedPreferences: SharedPrefere
                     Column() {
                         Text(
                             text = sharedPreferences.getString("userName", "")!!,
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily(Font(R.font.poppins_medium)),
                             modifier = Modifier
@@ -110,7 +110,7 @@ fun ProfileScreen(navController: NavController, sharedPreferences: SharedPrefere
                         )
                         Text(
                             text = sharedPreferences.getString("userEmail", "")!!,
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.poppins_medium)),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -158,7 +158,7 @@ fun ProfileScreen(navController: NavController, sharedPreferences: SharedPrefere
                     title = "Password",
                     desc = "Change your password"
                 ) {
-                    navController.navigate("ChangePasswordScreen")
+                    navController.navigate("ForgetPassword")
                 }
 
                 singleSetting(

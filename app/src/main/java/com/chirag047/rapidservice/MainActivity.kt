@@ -16,7 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.chirag047.rapidservice.Screens.AddNewMechanicScreen
-import com.chirag047.rapidservice.Screens.ChangePasswordScreen
 import com.chirag047.rapidservice.Screens.ChooseLocationOnMapScreen
 import com.chirag047.rapidservice.Screens.ClientIssueDetailScreen
 import com.chirag047.rapidservice.Screens.ClientLocationScreen
@@ -113,10 +112,10 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences, context: Cont
             MainScreen(navController, sharedPreferences)
         }
         composable(route = "ServiceRequestListScreen") {
-            ServiceRequestListScreen(navController,sharedPreferences)
+            ServiceRequestListScreen(navController, sharedPreferences)
         }
         composable(route = "MechanicListScreen") {
-            MechanicListScreen(navController,sharedPreferences)
+            MechanicListScreen(navController, sharedPreferences)
         }
         composable(route = "ServiceHistoryScreen") {
             ServiceHistoryScreen(navController)
@@ -125,16 +124,14 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences, context: Cont
             AddNewMechanicScreen(navController, sharedPreferences)
         }
         composable(route = "EditProfile") {
-            EditProfile(navController,sharedPreferences)
+            EditProfile(navController, sharedPreferences)
         }
         composable(route = "NotificationScreen") {
             NotificationScreen(navController)
         }
-        composable(route = "ChangePasswordScreen") {
-            ChangePasswordScreen(navController)
-        }
+
         composable(route = "EditCorporateScreen") {
-            EditCorporateScreen(navController)
+            EditCorporateScreen(navController, sharedPreferences)
         }
         composable(route = "ClientIssueDetailScreen" + "/{orderId}/{userId}/{corporateId}/{corporateName}/{corporateAddress}/{vehicleOwner}/{vehicleType}/{vehicleCompany}/{vehicleModel}/{vehicleFuelType}/{vehicleLicensePlate}/{serviceType}/{clientAddress}/{clientLatitude}/{clientLongitude}/{clientAddedText}") {
 

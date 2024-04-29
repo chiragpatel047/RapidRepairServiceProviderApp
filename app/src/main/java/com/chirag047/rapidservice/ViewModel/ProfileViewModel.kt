@@ -21,5 +21,24 @@ class ProfileViewModel @Inject constructor(val dataRepository: DataRepository) :
             phoneNo,
             sharedPreferences
         )
+
     suspend fun getUserDetails() = dataRepository.getUserDetails()
+
+    suspend fun getSingleCenterDetails(centerId: String) =
+        dataRepository.getSingleCenterDetails(centerId)
+
+    suspend fun updateCenterDetails(
+        centerId: String,
+        centerName: String,
+        centerAddress: String,
+        centerPhoneNo: String,
+        centerTime: String
+    ) =
+        dataRepository.updateCenterDetails(
+            centerId,
+            centerName,
+            centerAddress,
+            centerPhoneNo,
+            centerTime
+        )
 }
