@@ -375,7 +375,7 @@ fun loadPendingRequests(
             it,
             navController, {
                 scope.launch(Dispatchers.IO) {
-                    homeScreenViewModel.declineOrder(it.orderId)
+                    homeScreenViewModel.declineOrder(it.orderId,it.userId,it.corporateName)
                 }
             })
 

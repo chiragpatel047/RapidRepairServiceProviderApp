@@ -64,7 +64,8 @@ fun SelectMechanicForService(
     navController: NavController,
     sharedPreferences: SharedPreferences,
     orderId: String,
-    userId: String
+    userId: String,
+    centerName : String
 ) {
 
     val scope = rememberCoroutineScope()
@@ -165,7 +166,8 @@ fun SelectMechanicForService(
                             selectMechanicScreenViewModel.submitOrderToMechanic(
                                 orderId,
                                 selectedMechanic.mechanicId,
-                                userId
+                                userId,
+                                centerName
                             ).collect {
                                 when (it) {
                                     is ResponseType.Error -> {

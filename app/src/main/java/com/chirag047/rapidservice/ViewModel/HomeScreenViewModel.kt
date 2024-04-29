@@ -77,9 +77,9 @@ class HomeScreenViewModel @Inject constructor(val dataRepository: DataRepository
         }
     }
 
-    suspend fun declineOrder(orderId: String) {
+    suspend fun declineOrder(orderId: String,userId : String,centerName : String) {
         viewModelScope.launch {
-            dataRepository.declineOrder(orderId).collect {
+            dataRepository.declineOrder(orderId,userId,centerName).collect {
                 _declineOrder.emit(it)
             }
         }

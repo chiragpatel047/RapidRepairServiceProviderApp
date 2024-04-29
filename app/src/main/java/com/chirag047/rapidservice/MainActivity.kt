@@ -185,11 +185,12 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences, context: Cont
             )
         }
 
-        composable(route = "SelectMechanicForService" + "/{orderId}/{userId}") {
+        composable(route = "SelectMechanicForService" + "/{orderId}/{userId}/{centerName}") {
             val orderId = it.arguments?.getString("orderId")!!
             val userId = it.arguments?.getString("userId")!!
+            val centerName = it.arguments?.getString("centerName")!!
 
-            SelectMechanicForService(navController, sharedPreferences, orderId,userId)
+            SelectMechanicForService(navController, sharedPreferences, orderId,userId,centerName)
         }
 
 

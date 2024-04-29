@@ -270,7 +270,7 @@ fun ClientIssueDetailScreen(
                             .weight(1f)
                             .clickable {
                                 scope.launch(Dispatchers.IO) {
-                                    homeScreenViewModel.declineOrder(orderId)
+                                    homeScreenViewModel.declineOrder(orderId, userId, corporateName)
 
                                     when (declineOrder.value) {
                                         is ResponseType.Error -> {

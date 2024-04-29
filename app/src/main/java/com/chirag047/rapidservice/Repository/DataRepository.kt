@@ -226,7 +226,8 @@ class DataRepository @Inject constructor(
     suspend fun submitOrderToMechanic(
         orderId: String,
         mechanicId: String,
-        userId: String
+        userId: String,
+        centerName : String
     ): Flow<ResponseType<String>> =
         callbackFlow {
 
@@ -248,7 +249,7 @@ class DataRepository @Inject constructor(
 
                 val notification = PushNotification(
                     FirebaseNotificationModel(
-                        "Your Request is Accepted",
+                        "Your Request is Accepted by "+centerName,
                         "You can live track once it is start by our mechanic "
                     ), "/topics/" + userId
                 )
@@ -269,7 +270,7 @@ class DataRepository @Inject constructor(
 
 
     suspend fun declineOrder(
-        orderId: String,
+        orderId: String, userId: String, centerName: String
     ): Flow<ResponseType<String>> =
         callbackFlow {
 
@@ -286,13 +287,25 @@ class DataRepository @Inject constructor(
                     "orderInfo",
                     "Declined at : " + currentDate
                 )
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        trySend(ResponseType.Success("Order rejected"))
-                    } else {
-                        trySend(ResponseType.Error("Something went wrong"))
-                    }
+                .await()
+
+            val notify = withContext(Dispatchers.IO) {
+
+                val notification = PushNotification(
+                    FirebaseNotificationModel(
+                        "Your Request is Declined by " + centerName,
+                        "Click here for more details"
+                    ), "/topics/" + userId
+                )
+
+                try {
+                    val respose = notificationApi.postNotification(notification)
+                    trySend(ResponseType.Success("Submitted successfully"))
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+            }
 
             awaitClose {
                 close()

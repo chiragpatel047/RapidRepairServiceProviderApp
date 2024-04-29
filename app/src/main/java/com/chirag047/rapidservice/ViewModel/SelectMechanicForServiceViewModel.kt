@@ -29,8 +29,9 @@ class SelectMechanicForServiceViewModel @Inject constructor(val dataRepository: 
     suspend fun submitOrderToMechanic(
         orderId: String,
         mechanicId: String,
-        userId: String
-    ) = dataRepository.submitOrderToMechanic(orderId, mechanicId,userId)
+        userId: String,
+        centerName : String
+    ) = dataRepository.submitOrderToMechanic(orderId, mechanicId,userId,centerName)
 
 
 }
