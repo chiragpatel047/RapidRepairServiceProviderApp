@@ -51,6 +51,7 @@ import com.chirag047.rapidservice.Model.MechanicModel
 import com.chirag047.rapidservice.Model.OrderModel
 import com.chirag047.rapidservice.R
 import com.chirag047.rapidservice.ViewModel.HomeScreenViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -58,6 +59,14 @@ import kotlinx.coroutines.launch
 fun HomeScreen(navController: NavController, sharedPreferences: SharedPreferences) {
 
     Column(Modifier.fillMaxSize()) {
+
+        val centerId = sharedPreferences.getString(
+            "corporateId",
+            ""
+        )
+
+        FirebaseMessaging.getInstance().subscribeToTopic(centerId!!)
+        FirebaseMessaging.getInstance().subscribeToTopic("new")
 
         val scroll = rememberScrollState()
         val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
@@ -375,7 +384,7 @@ fun loadPendingRequests(
             it,
             navController, {
                 scope.launch(Dispatchers.IO) {
-                    homeScreenViewModel.declineOrder(it.orderId,it.userId,it.corporateName)
+                    homeScreenViewModel.declineOrder(it.orderId, it.userId, it.corporateName)
                 }
             })
 

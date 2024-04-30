@@ -36,6 +36,7 @@ import com.chirag047.rapidservice.Screens.WelcomeScreen
 import com.chirag047.rapidservice.ui.theme.RapidServiceTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,6 +57,7 @@ class MainActivity : ComponentActivity() {
                     val isFilled = sharedPreferences.getBoolean("isDataFilled", false)
 
                     if (auth.currentUser != null) {
+
                         if (isFilled) {
                             App("MainScreen", sharedPreferences, this)
 
