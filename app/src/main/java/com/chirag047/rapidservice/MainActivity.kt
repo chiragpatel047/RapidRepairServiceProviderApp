@@ -129,7 +129,7 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences, context: Cont
             EditProfile(navController, sharedPreferences)
         }
         composable(route = "NotificationScreen") {
-            NotificationScreen(navController)
+            NotificationScreen(navController,sharedPreferences)
         }
 
         composable(route = "EditCorporateScreen") {

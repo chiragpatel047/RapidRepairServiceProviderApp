@@ -9,6 +9,7 @@ import com.chirag047.rapidservice.Model.CenterModel
 import com.chirag047.rapidservice.Model.Coordinates
 import com.chirag047.rapidservice.Model.FirebaseNotificationModel
 import com.chirag047.rapidservice.Model.MechanicModel
+import com.chirag047.rapidservice.Model.NotificationModel
 import com.chirag047.rapidservice.Model.OrderModel
 import com.chirag047.rapidservice.Model.PushNotification
 import com.chirag047.rapidservice.Model.UserModel
@@ -227,7 +228,7 @@ class DataRepository @Inject constructor(
         orderId: String,
         mechanicId: String,
         userId: String,
-        centerName : String
+        centerName: String,
     ): Flow<ResponseType<String>> =
         callbackFlow {
 
@@ -245,13 +246,65 @@ class DataRepository @Inject constructor(
                 )
                 .await()
 
+            val dateFormate = SimpleDateFormat("dd MMMM yyyy")
+            val currentDate = dateFormate.format(Date())
+
+            val timeFormate = SimpleDateFormat("hh:mm a")
+            val currentTime = timeFormate.format(Date())
+
+
+            val notificationModel = NotificationModel(
+                System.currentTimeMillis().toString(),
+                "Your Request is Accepted by " + centerName,
+                "You can live track once it is start by our mechanic ",
+                currentDate,
+                currentTime
+            )
+
+            firestore.collection("users")
+                .document(userId)
+                .collection("notifications")
+                .document(notificationModel.notificationId)
+                .set(notificationModel).await()
+
             val notify = withContext(Dispatchers.IO) {
 
                 val notification = PushNotification(
                     FirebaseNotificationModel(
-                        "Your Request is Accepted by "+centerName,
-                        "You can live track once it is start by our mechanic "
+                        "Your Request is Accepted by " + centerName,
+                        "You can live track once it is start by our mechanic"
                     ), "/topics/" + userId
+                )
+
+                try {
+                    val respose = notificationApi.postNotification(notification)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            val notificationModel2 = NotificationModel(
+                System.currentTimeMillis().toString(),
+                "New order request",
+                "You have a new order request from " + centerName,
+                currentDate,
+                currentTime
+            )
+
+            firestore.collection("mechanicUsers")
+                .document(mechanicId)
+                .collection("notifications")
+                .document(notificationModel2.notificationId)
+                .set(notificationModel2).await()
+
+            val notify2 = withContext(Dispatchers.IO) {
+
+                val notification = PushNotification(
+                    FirebaseNotificationModel(
+                        "New order request",
+                        "You have a new order request from " + centerName
+                    ), "/topics/" + mechanicId
                 )
 
                 try {
@@ -398,5 +451,23 @@ class DataRepository @Inject constructor(
             close()
         }
     }
+
+
+    suspend fun getMyAllNotifications(): Flow<ResponseType<List<NotificationModel>?>> =
+        callbackFlow {
+
+            trySend(ResponseType.Loading())
+
+            firestore.collection("serviceUsers")
+                .document(auth.currentUser!!.uid)
+                .collection("notifications")
+                .addSnapshotListener { value, error ->
+                    trySend(ResponseType.Success(value!!.toObjects(NotificationModel::class.java))!!)
+                }
+
+            awaitClose {
+                close()
+            }
+        }
 
 }

@@ -220,6 +220,7 @@ fun LoginScreen(navController: NavController, sharedPreferences: SharedPreferenc
                                 sharedPreferences.edit()
                                     .putString("profileImage", it.data!!.userImage).apply()
 
+
                                 navController.popBackStack()
                                 navController.popBackStack()
                                 navController.popBackStack()
