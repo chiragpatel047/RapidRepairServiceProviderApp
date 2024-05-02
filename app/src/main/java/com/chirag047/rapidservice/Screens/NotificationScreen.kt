@@ -1,5 +1,6 @@
 package com.chirag047.rapidservice.Screens
 
+
 import android.content.SharedPreferences
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -18,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chirag047.rapidservice.Common.ActionBarWIthBack
 import com.chirag047.rapidservice.Common.ResponseType
+import com.chirag047.rapidservice.Common.SingleNotification
 import com.chirag047.rapidservice.Model.NotificationModel
 import com.chirag047.rapidservice.ViewModel.NotificationViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,56 +38,39 @@ fun NotificationScreen(navController: NavController, sharedPreferences: SharedPr
         val notificationList = remember {
             mutableListOf<NotificationModel>()
         }
-        val notificationHeaderList = remember {
-            mutableListOf<String>()
-        }
-        val notificationContentList = remember {
-            mutableListOf<NotificationModel>()
-        }
+
+        val result = notificationViewModel.requestsData.collectAsState()
 
         Column(Modifier.fillMaxWidth()) {
             ActionBarWIthBack(title = "Notification")
 
             LaunchedEffect(key1 = Unit) {
                 scope.launch(Dispatchers.Main) {
-                    notificationViewModel.getMyAllNotifications().collect {
-                        when (it) {
-                            is ResponseType.Error -> {
-
-                            }
-
-                            is ResponseType.Loading -> {
-
-                            }
-
-                            is ResponseType.Success -> {
-                                notificationList.addAll(it.data!!)
-                                notificationList.forEach {
-                                    notificationHeaderList.add(it.notificationDate)
-                                }
-                            }
-                        }
-                    }
+                    val id = sharedPreferences.getString("corporateId", "")
+                    notificationViewModel.getMyAllNotifications(id!!)
                 }
             }
 
-            LazyColumn() {
-                val dist = notificationHeaderList.distinct()
+            when (result.value) {
+                is ResponseType.Error -> {
 
-                dist.forEach { dateHeader ->
+                }
 
-                    notificationList.forEach {
-                        if (it.equals(dateHeader)) {
-                            notificationContentList.add(it)
+                is ResponseType.Loading -> {
+
+                }
+
+                is ResponseType.Success -> {
+                    notificationList.clear()
+                    notificationList.addAll(result.value.data!!)
+
+                    LazyColumn() {
+                        items(notificationList) {
+                            SingleNotification(
+                                notificationModel = it,
+                                navController = navController
+                            )
                         }
-                    }
-
-                    stickyHeader {
-                        Text(text = dateHeader)
-                    }
-
-                    items(notificationContentList) {
-                        Text(text = it.notificationTitle)
                     }
                 }
             }

@@ -252,11 +252,9 @@ class DataRepository @Inject constructor(
             val timeFormate = SimpleDateFormat("hh:mm a")
             val currentTime = timeFormate.format(Date())
 
-
             val notificationModel = NotificationModel(
                 System.currentTimeMillis().toString(),
                 "Your Request is Accepted by " + centerName,
-                "You can live track once it is start by our mechanic ",
                 currentDate,
                 currentTime
             )
@@ -284,19 +282,19 @@ class DataRepository @Inject constructor(
                 }
             }
 
-            val notificationModel2 = NotificationModel(
-                System.currentTimeMillis().toString(),
-                "New order request",
-                "You have a new order request from " + centerName,
-                currentDate,
-                currentTime
-            )
-
-            firestore.collection("mechanicUsers")
-                .document(mechanicId)
-                .collection("notifications")
-                .document(notificationModel2.notificationId)
-                .set(notificationModel2).await()
+//            val notificationModel2 = NotificationModel(
+//                System.currentTimeMillis().toString(),
+//                "You have a new order request from " + centerName,
+//                currentDate,
+//                currentTime
+//            )
+//
+//            firestore.collection("mechanicUsers")
+//                .whereEqualTo("mechanicId",mechanicId)
+//                .document(mechanicId)
+//                .collection("notifications")
+//                .document(notificationModel2.notificationId)
+//                .set(notificationModel2).await()
 
             val notify2 = withContext(Dispatchers.IO) {
 
@@ -453,13 +451,13 @@ class DataRepository @Inject constructor(
     }
 
 
-    suspend fun getMyAllNotifications(): Flow<ResponseType<List<NotificationModel>?>> =
+    suspend fun getMyAllNotifications(centerId: String): Flow<ResponseType<List<NotificationModel>?>> =
         callbackFlow {
 
             trySend(ResponseType.Loading())
 
-            firestore.collection("serviceUsers")
-                .document(auth.currentUser!!.uid)
+            firestore.collection("centers")
+                .document(centerId)
                 .collection("notifications")
                 .addSnapshotListener { value, error ->
                     trySend(ResponseType.Success(value!!.toObjects(NotificationModel::class.java))!!)
