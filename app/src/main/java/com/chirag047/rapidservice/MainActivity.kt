@@ -28,6 +28,7 @@ import com.chirag047.rapidservice.Screens.MainScreen
 import com.chirag047.rapidservice.Screens.MechanicListScreen
 import com.chirag047.rapidservice.Screens.NotificationScreen
 import com.chirag047.rapidservice.Screens.SelectMechanicForService
+import com.chirag047.rapidservice.Screens.SendNotificationScreen
 import com.chirag047.rapidservice.Screens.ServiceHistoryScreen
 import com.chirag047.rapidservice.Screens.ServiceRequestListScreen
 import com.chirag047.rapidservice.Screens.SignUpScreen
@@ -134,6 +135,11 @@ fun App(startScreen: String, sharedPreferences: SharedPreferences, context: Cont
 
         composable(route = "EditCorporateScreen") {
             EditCorporateScreen(navController, sharedPreferences)
+        }
+
+        composable(route = "SendNotificationScreen"+ "/{mechanicId}") {
+            val mechanicId = it.arguments?.getString("mechanicId")!!
+            SendNotificationScreen(navController,mechanicId)
         }
         composable(route = "ClientIssueDetailScreen" + "/{orderId}/{userId}/{corporateId}/{corporateName}/{corporateAddress}/{vehicleOwner}/{vehicleType}/{vehicleCompany}/{vehicleModel}/{vehicleFuelType}/{vehicleLicensePlate}/{serviceType}/{clientAddress}/{clientLatitude}/{clientLongitude}/{clientAddedText}") {
 

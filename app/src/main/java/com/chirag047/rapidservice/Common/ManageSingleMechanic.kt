@@ -18,9 +18,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,14 +41,18 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.chirag047.rapidservice.R
+import androidx.compose.material3.AlertDialog as AlertDialog
 
 @Composable
 fun ManageSingleMechanic(
     name: String,
     status: String,
     profileImageUrl: String,
+    mechanicId : String,
+    navController: NavController,
     deleteMechanic: () -> Unit
 ) {
 
@@ -135,51 +143,28 @@ fun ManageSingleMechanic(
 
         }
 
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(15.dp, 5.dp, 15.dp, 15.dp),
-        ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             Row(
-                modifier = Modifier
-                    .border(
-                        1.dp, MaterialTheme.colorScheme.primary,
-                        RoundedCornerShape(25.dp)
-                    )
-                    .weight(1f)
+                Modifier
+                    .padding(15.dp, 5.dp, 15.dp, 15.dp)
+                    .clip(RoundedCornerShape(25.dp))
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clickable {
+                        navController.navigate("SendNotificationScreen"+ "/$mechanicId")
+                    },
+                horizontalArrangement = Arrangement.End
             ) {
                 Text(
                     text = "Send notification",
                     fontSize = 12.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontFamily = FontFamily(Font(R.font.poppins_medium)),
                     modifier = Modifier
                         .padding(15.dp, 8.dp)
-                        .weight(1f)
                 )
             }
-            Spacer(modifier = Modifier.padding(2.dp))
-            Row(
-                modifier = Modifier
-                    .border(
-                        1.dp, MaterialTheme.colorScheme.primary,
-                        RoundedCornerShape(25.dp)
-                    )
-                    .weight(1f)
-            ) {
-                Text(
-                    text = "Call now",
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontFamily = FontFamily(Font(R.font.poppins_medium)),
-                    modifier = Modifier
-                        .padding(15.dp, 8.dp)
-                        .weight(1f)
-                )
-            }
-            Spacer(modifier = Modifier.padding(5.dp))
         }
+
     }
 }
+

@@ -88,7 +88,7 @@ fun MechanicScreen(navController: NavController, sharedPreferences: SharedPrefer
                         Modifier
                             .fillMaxWidth()
                     ) {
-                        loadMechanics(mechanicList, mechanicScreenViewModel)
+                        loadMechanics(mechanicList, mechanicScreenViewModel,navController)
                     }
                 }
 
@@ -115,11 +115,11 @@ fun MechanicScreen(navController: NavController, sharedPreferences: SharedPrefer
 }
 
 @Composable
-fun loadMechanics(list: List<MechanicModel>, mechanicScreenViewModel: MechanicScreenViewModel) {
+fun loadMechanics(list: List<MechanicModel>, mechanicScreenViewModel: MechanicScreenViewModel,navController: NavController) {
     val scope = rememberCoroutineScope()
 
     list.forEach {
-        ManageSingleMechanic(it.userName, it.mechanicStatus, it.userImage) {
+        ManageSingleMechanic(it.userName, it.mechanicStatus, it.userImage,it.mechanicId,navController) {
             scope.launch(Dispatchers.Main) {
                 mechanicScreenViewModel.deleteMechanic(it.uid).collect {
                     when (it) {

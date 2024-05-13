@@ -43,6 +43,8 @@ import com.chirag047.rapidservice.Common.poppinsBoldCenterText
 import com.chirag047.rapidservice.Common.poppinsBoldText
 import com.chirag047.rapidservice.Common.poppinsText
 import com.chirag047.rapidservice.R
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun ProfileScreen(navController: NavController, sharedPreferences: SharedPreferences) {
@@ -174,7 +176,43 @@ fun ProfileScreen(navController: NavController, sharedPreferences: SharedPrefere
                     title = "Logout",
                     desc = ""
                 ) {
+                    val firebaseAuth = Firebase.auth
+                    firebaseAuth.signOut()
 
+                    sharedPreferences.edit().putString("userName", "")
+                        .apply()
+                    sharedPreferences.edit().putString("userEmail", "")
+                        .apply()
+
+                    sharedPreferences.edit()
+                        .putString("profileImage", "").apply()
+
+                    sharedPreferences.edit().putString(
+                        "corporateName",
+                        ""
+                    ).apply()
+
+                    sharedPreferences.edit().putString(
+                        "corporateAddress",
+                        ""
+                    ).apply()
+
+                    sharedPreferences.edit().putString(
+                        "corporateTime",
+                        ""
+                    ).apply()
+
+                    sharedPreferences.edit().putString(
+                        "corporateId",
+                        ""
+                    ).apply()
+
+
+                    navController.popBackStack()
+                    navController.popBackStack()
+                    navController.popBackStack()
+                    navController.popBackStack()
+                    navController.navigate("SignUpScreen")
                 }
             }
         }

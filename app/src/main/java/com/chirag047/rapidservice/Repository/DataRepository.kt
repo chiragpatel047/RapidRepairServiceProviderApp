@@ -246,31 +246,13 @@ class DataRepository @Inject constructor(
                 )
                 .await()
 
-            val dateFormate = SimpleDateFormat("dd MMMM yyyy")
-            val currentDate = dateFormate.format(Date())
-
-            val timeFormate = SimpleDateFormat("hh:mm a")
-            val currentTime = timeFormate.format(Date())
-
-            val notificationModel = NotificationModel(
-                System.currentTimeMillis().toString(),
-                "Your Request is Accepted by " + centerName,
-                currentDate,
-                currentTime
-            )
-
-            firestore.collection("users")
-                .document(userId)
-                .collection("notifications")
-                .document(notificationModel.notificationId)
-                .set(notificationModel).await()
 
             val notify = withContext(Dispatchers.IO) {
 
                 val notification = PushNotification(
                     FirebaseNotificationModel(
-                        "Your Request is Accepted by " + centerName,
-                        "You can live track once it is start by our mechanic"
+                        "Your Request is Accepted",
+                        "Your Request is Accepted by " + centerName
                     ), "/topics/" + userId
                 )
 
@@ -281,20 +263,6 @@ class DataRepository @Inject constructor(
                     e.printStackTrace()
                 }
             }
-
-//            val notificationModel2 = NotificationModel(
-//                System.currentTimeMillis().toString(),
-//                "You have a new order request from " + centerName,
-//                currentDate,
-//                currentTime
-//            )
-//
-//            firestore.collection("mechanicUsers")
-//                .whereEqualTo("mechanicId",mechanicId)
-//                .document(mechanicId)
-//                .collection("notifications")
-//                .document(notificationModel2.notificationId)
-//                .set(notificationModel2).await()
 
             val notify2 = withContext(Dispatchers.IO) {
 
@@ -340,12 +308,13 @@ class DataRepository @Inject constructor(
                 )
                 .await()
 
+
             val notify = withContext(Dispatchers.IO) {
 
                 val notification = PushNotification(
                     FirebaseNotificationModel(
-                        "Your Request is Declined by " + centerName,
-                        "Click here for more details"
+                        "Your Request is Declined",
+                        "Your Request is Declined by " + centerName
                     ), "/topics/" + userId
                 )
 
@@ -456,8 +425,8 @@ class DataRepository @Inject constructor(
 
             trySend(ResponseType.Loading())
 
-            firestore.collection("centers")
-                .document(centerId)
+            firestore.collection("serviceUsers")
+                .document(auth.currentUser!!.uid)
                 .collection("notifications")
                 .addSnapshotListener { value, error ->
                     trySend(ResponseType.Success(value!!.toObjects(NotificationModel::class.java))!!)
@@ -467,5 +436,32 @@ class DataRepository @Inject constructor(
                 close()
             }
         }
+
+    suspend fun sendCustomNotificationToMechanic(
+        mechanicId: String,
+        title: String,
+        desc: String
+    ): Flow<ResponseType<String>> = callbackFlow {
+        val notify2 = withContext(Dispatchers.IO) {
+
+            val notification = PushNotification(
+                FirebaseNotificationModel(
+                    title,
+                    desc
+                ), "/topics/" + mechanicId
+            )
+
+            try {
+                val respose = notificationApi.postNotification(notification)
+                trySend(ResponseType.Success("Notification send successfully"))
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        awaitClose {
+            close()
+        }
+    }
 
 }
