@@ -328,7 +328,11 @@ fun HomeScreen(navController: NavController, sharedPreferences: SharedPreference
                 }
             }
 
-            loadPendingRequests(pendingOrdersList.take(3), navController, homeScreenViewModel)
+            loadPendingRequests(
+                pendingOrdersList.take(3).reversed(),
+                navController,
+                homeScreenViewModel
+            )
             NoDataText(
                 text = pendingStatus.value,
                 isVisible = pendingOrdersList.size.equals(0)
