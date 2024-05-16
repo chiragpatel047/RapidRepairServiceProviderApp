@@ -48,7 +48,6 @@ fun ServiceRequestListScreen(navController: NavController, sharedPreferences: Sh
         mutableStateOf("Loading...")
     }
 
-
     Column(Modifier.fillMaxWidth()) {
         Column(Modifier.fillMaxWidth()) {
             poppinsBoldCenterText(
@@ -90,13 +89,11 @@ fun ServiceRequestListScreen(navController: NavController, sharedPreferences: Sh
                 }
             }
 
-            loadPendingRequests(pendingOrdersList.take(3),navController,homeScreenViewModel)
+            loadPendingRequests(pendingOrdersList.reversed(),navController,homeScreenViewModel)
             NoDataText(
                 text = pendingStatus.value,
                 isVisible = pendingOrdersList.size.equals(0)
             )
-
         }
-
     }
 }
