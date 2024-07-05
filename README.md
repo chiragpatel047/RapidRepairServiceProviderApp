@@ -1,3 +1,8 @@
+<h5>Rapid Repair (User App) :- https://github.com/chiragpatel047/RapidRepairUserApp.git </h5>
+
+<h5>Rapid Mechanic (Mechanic's App) :- https://github.com/chiragpatel047/RapidRepairDeliverApp.git </h5>
+
+
 <h1>App Screenshots </h1>
 
 <img src="https://github.com/chiragpatel047/RapidRepairServiceProviderApp/assets/71206617/21320c5d-df24-47f6-a83a-43501e7b1b4e" width="250px"> 
